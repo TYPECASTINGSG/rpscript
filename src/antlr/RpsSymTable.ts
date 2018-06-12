@@ -1,6 +1,5 @@
 //BaseScope , GlobalScope , LocalScope , Symbol , FunctionSymbol , VariableSymbol
 
-import {TaguiCoreEngine} from '../engines/core-engine';
 
 export class RpsContext {
 
@@ -28,8 +27,8 @@ export class RpsContext {
     this.outputContent += expStr;
   }
 
-  printOutput(){
-    console.log(this.outputContent);
+  getOutputStr() : string{
+    return this.outputContent;
   }
 }
 

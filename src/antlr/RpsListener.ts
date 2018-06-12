@@ -5,7 +5,6 @@ import {Deferred} from "ts-deferred";
 import {RpsListener} from './grammar/RpsListener';
 import { StatementContext, FileContext, UnknownContext, ExpressionContext } from './grammar/RpsParser';
 
-import {TaguiCoreEngine} from '../engines/core-engine';
 import {RpsContext, FunctionSymbol, KeywordSymbol} from './RpsSymTable';
 
 export class RpsMainListener implements RpsListener {
@@ -25,19 +24,16 @@ export class RpsMainListener implements RpsListener {
     this.content = "";
   }
   public exitFile(ctx: FileContext) : void{
-    // console.log(JSON.stringify(this.symTable.currentScope));
-    this.symTable.printOutput();
     this.deferred.resolve(this.symTable);
   }
 
   public enterExpression(ctx:ExpressionContext) : void{
 
     this.symTable.convertExpression(
-      ctx.CAP_STRING().text,
-      _.map(ctx.argument(), (arg)=>arg.text)
-    );
+      ctx.CAP_STRING().text, _.map(ctx.argument(), (arg)=>arg.text) );
   }
   public enterUnknown(ctx: UnknownContext) : void{
+    console.log('unknown : ');console.log(ctx.text);
     this.symTable.appendOutput(ctx.text);
   }
 
