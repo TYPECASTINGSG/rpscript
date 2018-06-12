@@ -1,0 +1,20 @@
+{
+  "include": [
+    "src/**.ts"
+   ],
+   "exclude": [
+    "node_modules", "test/**.ts"
+   ],
+  "compilerOptions": {
+    "lib": [
+     "es2017","es2015","dom","es6"
+    ],
+    "types":["node"],
+    "target": "es2015",
+    "module": "commonjs",
+    "declaration": true,
+    "strict": false,
+    "esModuleInterop": true,
+    "experimentalDecorators":true
+  }
+}

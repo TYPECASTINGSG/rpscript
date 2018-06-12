@@ -59,3 +59,12 @@ typings/
 
 # next.js build output
 .next
+
+src/*.d.ts
+src/*.js
+
+src/antlr/*.d.ts
+src/antlr/*.js
+
+src/antlr/grammar/*
+!src/antlr/grammar/Rps.g4
