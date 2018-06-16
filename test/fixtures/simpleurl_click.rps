@@ -1,0 +1,5 @@
+mocha "simple.rps"
+launch
+navigate "http://www.google.com.sg"
+wait 3
+click "a[text='Gmail']"

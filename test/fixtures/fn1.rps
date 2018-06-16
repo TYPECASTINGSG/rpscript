@@ -1,0 +1,19 @@
+; .section OpenGoogle
+;   open. "http://www.google.com.sg"
+;   kill.
+
+; .section OpenUrl $url
+;   open. $url
+;   shutdown.
+
+============
+
+@openGoogle{
+  open "google.com.sg"
+  kill 
+}
+
+@openUrl $url {
+  open $url
+  shutdown
+}

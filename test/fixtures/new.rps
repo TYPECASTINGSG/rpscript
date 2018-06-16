@@ -1,0 +1,5 @@
+import c from './fn1'
+
+hello "world"
+open "file.txt"
+exec c.openGoogle $RESULT "somethign"

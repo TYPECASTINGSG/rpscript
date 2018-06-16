@@ -1,0 +1,5 @@
+open "hello.txt"
+wait 5
+keyword "happily typing away..."
+
+open "hello.txt" | wait 5

@@ -68,3 +68,8 @@ src/antlr/*.js
 
 src/antlr/grammar/*
 !src/antlr/grammar/Rps.g4
+
+src/core/*.d.ts
+src/core/*.js
+
+.rpscript
