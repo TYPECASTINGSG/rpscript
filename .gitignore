@@ -68,6 +68,7 @@ src/antlr/*.js
 
 src/antlr/grammar/*
 !src/antlr/grammar/Rps.g4
+!src/antlr/grammar/RPScript.g4
 
 src/core/*.d.ts
 src/core/*.js

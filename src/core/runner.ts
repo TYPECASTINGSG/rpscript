@@ -7,7 +7,8 @@ import {RPScriptLexer} from '../antlr/grammar/RPScriptLexer';
 import {RPScriptListener} from '../antlr/grammar/RPScriptListener';
 
 import {RpsMainListener} from '../antlr/RpsListener';
-import {RpsContext} from '../antlr/RpsSymTable';
+
+var tsc = require('typescript-compiler');
 
 import {Deferred} from "ts-deferred";
 
@@ -31,6 +32,14 @@ export class Runner{
         fs.writeFileSync(`${this.config['outputDir']}/output.ts`,output);
 
         return Promise.resolve(output);
+    }
+
+    async run (filepath:string) : Promise<any> {
+        let resp = require(filepath);
+    }
+    
+    tsc (filepath:string) : any {
+        return tsc.compile(filepath) ;
     }
 
     private exec (tree) :Promise<any>{

@@ -1,9 +1,9 @@
-import { RpsContext } from '../antlr/RpsSymTable';
 export declare class Runner {
     config: any;
     constructor();
-    compile(filepath: string): Promise<RpsContext>;
+    compile(filepath: string): Promise<any>;
+    run(filepath: string): Promise<any>;
+    tsc(filepath: string): any;
     private exec;
-    execLine(line: any): Promise<any>;
     private parseTree;
 }

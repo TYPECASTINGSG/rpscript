@@ -39,6 +39,8 @@ export class RpsMainListener implements RPScriptListener {
     this.logger.log('debug','exitProgram : '+ctx.text);
     this.logger.log('debug','gen : '+this.translator.content);
 
+    this.translator.appendBottom();
+
     this.deferred.resolve(this.translator.content);
   }
 
@@ -54,23 +56,23 @@ export class RpsMainListener implements RPScriptListener {
   }
 
   public enterPipeActions(ctx:PipeActionsContext) : void {
-    this.logger.log('debug','enterPipeline : '+ctx.text);
+    // this.logger.log('debug','enterPipeline : '+ctx.text);
   }
 
   public enterSingleAction(ctx:SingleActionContext) : void {
-    this.logger.log('debug','enterSingleAction : '+ctx.text);
+    // this.logger.log('debug','enterSingleAction : '+ctx.text);
   }
 
   public enterComment(ctx:CommentContext) : void {
-    this.logger.log('debug','enterComment : '+ctx.text);
-    this.translator.genComment(ctx);
+    // this.logger.log('debug','enterComment : '+ctx.text);
+    // this.translator.genComment(ctx);
   }
   public enterIfStatement(ctx:IfStatementContext) : void {
-    this.logger.log('debug','enterIf : '+ctx.text);
-    this.translator.genIfStatement(ctx);
+    // this.logger.log('debug','enterIf : '+ctx.text);
+    // this.translator.genIfStatement(ctx);
   }
   public enterSwitchStatement(ctx:SwitchStatementContext) : void {
-    this.logger.log('debug','enterSwitch : '+ctx.text);
+    // this.logger.log('debug','enterSwitch : '+ctx.text);
     // this.translator.genSwitchStatement(ctx);
   }
   public enterNamedFn(ctx:NamedFnContext) : void {
@@ -90,42 +92,42 @@ export class RpsMainListener implements RPScriptListener {
     this.logger.log('debug','gen : '+this.translator.content);
   }
   public enterParamList(ctx:ParamListContext) : void {
-    this.logger.log('debug','enterParamList : '+ctx.text);
+    // this.logger.log('debug','enterParamList : '+ctx.text);
     // this.translator.genParamList(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.logger.log('debug','gen : '+this.translator.content);
   }
   public exitParamList(ctx:ParamListContext) : void {
-    this.logger.log('debug','exitParamList : '+ctx.text);
+    // this.logger.log('debug','exitParamList : '+ctx.text);
   }
 
   public enterParam(ctx:ParamContext) : void {
-    this.logger.log('debug','enterParam : '+ctx.text);
+    // this.logger.log('debug','enterParam : '+ctx.text);
   }
   public exitParam(ctx:ParamContext) : void {
-    this.logger.log('debug','exitParam : '+ctx.text);
-    this.translator.appendComma();
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.logger.log('debug','exitParam : '+ctx.text);
+    // this.translator.appendComma();
+    // this.logger.log('debug','gen : '+this.translator.content);
   }
 
   public enterOptList(ctx:OptListContext) : void {
-    this.logger.log('debug','enterOptList : '+ctx.text);
-    this.translator.genOptList(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.logger.log('debug','enterOptList : '+ctx.text);
+    // this.translator.genOptList(ctx);
+    // this.logger.log('debug','gen : '+this.translator.content);
   }
   public exitOptList(ctx:OptListContext) : void {
-    this.logger.log('debug','exitOptList : '+ctx.text);
+    // this.logger.log('debug','exitOptList : '+ctx.text);
   }
 
   public enterVariable(ctx:VariableContext) : void {
-    this.logger.log('debug','enterVariable : '+ctx.text);
-    this.translator.genVariable(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.logger.log('debug','enterVariable : '+ctx.text);
+    // this.translator.genVariable(ctx);
+    // this.logger.log('debug','gen : '+this.translator.content);
   }
 
   public enterLiteral(ctx:LiteralContext) : void {
-    this.logger.log('debug','enterLiteral : '+ctx.text);
-    this.translator.genLiteral(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.logger.log('debug','enterLiteral : '+ctx.text);
+    // this.translator.genLiteral(ctx);
+    // this.logger.log('debug','gen : '+this.translator.content);
   }
 
   public enterAnonFn(ctx:AnonFnContext) : void{

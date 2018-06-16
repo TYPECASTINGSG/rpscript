@@ -41,6 +41,7 @@
     "robotjs": "^0.5.1",
     "shelljs": "^0.8.2",
     "ts-deferred": "^1.0.4",
+    "typescript-compiler": "^1.4.1-2",
     "winston": "^3.0.0"
   },
   "devDependencies": {
