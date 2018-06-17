@@ -11,21 +11,28 @@ export class Translator {
 
     genBoilerHeader () {
         this.content = `
-import * as rps from 'rpscript-api';
+import rps from 'rpscript-api';
+import {RpsContext, common, desktop, chrome, file, functional, test } from 'rpscript-api';
+import { EventEmitter } from 'events';
 
-let RpsContext = rps['RpsContext'];
-let common = rps['common'];
+module.exports = new EventEmitter();
 
 let $CONTEXT = new RpsContext();
+let $RESULT = null;
+
 
 async function main(){
-
+    module.exports.emit('runner.start');
         `.trim()+'\n\n';
     }
+
     appendBottom () {
         this.content += `
+    module.exports.emit('runner.end');
 }
-main();\n`;
+$CONTEXT.event.on ('action', (...params) => module.exports.emit('action',params));
+setTimeout(main, 500);
+`;
     }
 
     genBlock (ctx:BlockContext) {this.content += "{\n";}
@@ -36,7 +43,12 @@ main();\n`;
     genSingleAction (ctx:SingleActionContext) {}
 
     genAction (ctx:ActionContext) :void{
-        this.content += `\t${ this.capitalize(ctx.WORD().text) } ( $CONTEXT ,`;
+        //TODO: if WORD has single . , do not append rps
+        let keyword = this.capitalize(ctx.WORD().text);
+
+        if(ctx.WORD().text.indexOf('.') < 0) keyword = 'rps.'+keyword;
+        
+        this.content += `\t${ keyword } ( $CONTEXT ,`;
         
         this.content += this.parseOpt(ctx.optList().opt())+' , ';
         this.content += this.parseParams(ctx.paramList().param());

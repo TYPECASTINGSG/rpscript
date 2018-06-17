@@ -10,7 +10,7 @@ function exec () {
 
 let parse = function (filePath:string) : Promise<RpsContext> {
     let runner = new Runner();
-    return runner.compile(filePath);
+    return runner.convertToTS(filePath);
 }
 
 module.exports = {

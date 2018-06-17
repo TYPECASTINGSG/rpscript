@@ -1,0 +1,3 @@
+open "README.md"
+wait 5
+type "hello readme"

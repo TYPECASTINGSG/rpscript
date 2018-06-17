@@ -32,6 +32,7 @@
     "commander": "^2.15.1",
     "configstore": "^3.1.2",
     "csv-parse": "^2.4.0",
+    "dateformat": "^3.0.3",
     "download": "^7.0.0",
     "inquirer": "^5.2.0",
     "lodash": "^4.17.10",
@@ -41,7 +42,7 @@
     "robotjs": "^0.5.1",
     "shelljs": "^0.8.2",
     "ts-deferred": "^1.0.4",
-    "typescript-compiler": "^1.4.1-2",
+    "tslint": "^5.10.0",
     "winston": "^3.0.0"
   },
   "devDependencies": {
@@ -52,6 +53,7 @@
     "@types/cli-table": "^0.3.0",
     "@types/commander": "^2.12.2",
     "@types/configstore": "^2.1.1",
+    "@types/dateformat": "^1.0.1",
     "@types/download": "^6.2.2",
     "@types/inquirer": "0.0.41",
     "@types/jasmine": "^2.8.8",

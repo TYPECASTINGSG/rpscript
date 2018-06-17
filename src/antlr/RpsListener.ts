@@ -1,27 +1,25 @@
-import fs from 'fs';
-import { ParserRuleContext } from "antlr4ts/ParserRuleContext";
 import {Deferred} from "ts-deferred";
 import {Logger} from '../core/logger';
+
+import {ANTLRErrorListener,Recognizer,RecognitionException} from 'antlr4ts';
 
 import {RPScriptListener} from './grammar/RPScriptListener';
 import {VariableContext,LiteralContext,OptListContext,ParamContext,ParamListContext,ProgramContext, BlockContext,PipeActionsContext, SingleActionContext,
 CommentContext, IfStatementContext, SwitchStatementContext, NamedFnContext, ActionContext, AnonFnContext, OptContext} from './grammar/RPScriptParser';
 
 import {Translator} from '../core/translator';
-// import {RpsContext, FunctionSymbol, KeywordSymbol} from './RpsSymTable';
 
-export class RpsMainListener implements RPScriptListener {
+export class RpsTranspileListener implements RPScriptListener {
 
   logger;
 
-  deferred:Deferred<any>;
+  deferred:Deferred<string>;
 
-  // symTable:RpsContext;
   translator:Translator;
 
   content:string;
 
-  constructor(defer:Deferred<any>){
+  constructor(defer:Deferred<string>){
     this.deferred = defer;
     this.logger = Logger.getInstance();
   }
@@ -41,7 +39,8 @@ export class RpsMainListener implements RPScriptListener {
 
     this.translator.appendBottom();
 
-    this.deferred.resolve(this.translator.content);
+    if(ctx.exception) this.deferred.reject(ctx.exception)
+    else this.deferred.resolve(this.translator.content);
   }
 
   public enterBlock(ctx:BlockContext) : void {
@@ -60,12 +59,15 @@ export class RpsMainListener implements RPScriptListener {
   }
 
   public enterSingleAction(ctx:SingleActionContext) : void {
-    // this.logger.log('debug','enterSingleAction : '+ctx.text);
+    this.logger.log('debug','enterSingleAction : '+ctx.text);
+  }
+  public exitSingleAction(ctx:SingleActionContext) : void {
+    this.logger.log('debug','exitSingleAction : '+ctx.text);
   }
 
   public enterComment(ctx:CommentContext) : void {
-    // this.logger.log('debug','enterComment : '+ctx.text);
-    // this.translator.genComment(ctx);
+    this.logger.log('debug','enterComment : '+ctx.text);
+    this.translator.genComment(ctx);
   }
   public enterIfStatement(ctx:IfStatementContext) : void {
     // this.logger.log('debug','enterIf : '+ctx.text);
@@ -139,5 +141,17 @@ export class RpsMainListener implements RPScriptListener {
     this.logger.log('debug','exitAnonFn : '+ctx.text);
   }
 
+
+}
+
+export class ErrorCollectorListener implements ANTLRErrorListener<any> {
+
+  syntaxError<T>(
+    recognizer: Recognizer<T, any>, offendingSymbol: T, 
+    line: number, charPositionInLine: number, 
+    msg: string, e: RecognitionException): void {
+
+      console.error("WEIRD STUFF");
+  }
 
 }
