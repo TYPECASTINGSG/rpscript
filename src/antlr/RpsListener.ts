@@ -141,6 +141,42 @@ export class RpsTranspileListener implements RPScriptListener {
     this.logger.log('debug','exitAnonFn : '+ctx.text);
   }
 
+}
+
+export class RpsReplListener extends RpsTranspileListener {
+
+  logger;
+
+  deferred:Deferred<string>;
+
+  translator:Translator;
+
+  content:string;
+
+  constructor(defer:Deferred<string>){
+    super(defer);
+  }
+
+  public enterProgram(ctx: ProgramContext) : void{
+    
+    this.logger.log('debug','enterProgram : '+ctx.text);
+
+    this.translator = new Translator();
+    // this.translator.genBoilerHeader();
+
+    this.logger.log('debug','gen : '+this.translator.content);
+  }
+  public exitProgram(ctx: ProgramContext) : void{
+    this.logger.log('debug','exitProgram : '+ctx.text);
+    this.logger.log('debug','gen : '+this.translator.content);
+
+    this.translator.content += "\n   module.exports = $CONTEXT";
+    // this.translator.appendBottom();
+
+    if(ctx.exception) this.deferred.reject(ctx.exception)
+    else this.deferred.resolve(this.translator.content);
+  }
+
 
 }
 

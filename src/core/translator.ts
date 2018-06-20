@@ -11,15 +11,7 @@ export class Translator {
 
     genBoilerHeader () {
         this.content = `
-import rps from 'rpscript-api';
-import {RpsContext, common, desktop, chrome, file, functional, test } from 'rpscript-api';
-import { EventEmitter } from 'events';
-
 module.exports = new EventEmitter();
-
-let $CONTEXT = new RpsContext();
-let $RESULT = null;
-
 
 async function main(){
     module.exports.emit('runner.start');
@@ -44,14 +36,14 @@ setTimeout(main, 500);
 
     genAction (ctx:ActionContext) :void{
         //TODO: if WORD has single . , do not append rps
-        let keyword = this.capitalize(ctx.WORD().text);
-
-        if(ctx.WORD().text.indexOf('.') < 0) keyword = 'rps.'+keyword;
+        let keyword = Translator.parseAction(ctx.WORD().text);
         
-        this.content += `\t${ keyword } ( $CONTEXT ,`;
+        this.content += `\t$CONTEXT.$RESULT = `;
+        this.content += `${ keyword } ( $CONTEXT ,`;
+        this.content += Translator.parseOpt(ctx.optList().opt());
         
-        this.content += this.parseOpt(ctx.optList().opt())+' , ';
-        this.content += this.parseParams(ctx.paramList().param());
+        if(ctx.paramList().param().length > 0)
+            this.content += ' , '+Translator.parseParams(ctx.paramList().param());
 
     }
     closeAction (ctx:ActionContext) : void {this.content += ");\n";}
@@ -63,13 +55,13 @@ setTimeout(main, 500);
     appendComma () {this.content += ' , ';}
 
 
-    private capitalize(word:string): string {
+    private static capitalize(word:string): string {
         return word.charAt(0).toUpperCase() + word.slice(1);
     }
-    private parseParams (params:ParamContext[]):string{
+    private static parseParams (params:ParamContext[]):string{
         return R.map(param => param.text, params).join(' , ');
     }
-    private parseOpt (opts:OptContext[]):string{
+    private static parseOpt (opts:OptContext[]):string{
         let obj = {};
         R.forEach(x => {
             obj[x.optName().text] = x.literal().text
@@ -100,5 +92,59 @@ setTimeout(main, 500);
         let variables = R.map(node=>node.text,  ctx.VARIABLE()).join(',');
         
         this.content += `function( ${variables} ) `;
+    }
+
+    static genReplParams (cmd:string):string[] {
+        let cmds = cmd.split(' ');
+        let remainCmds = cmds.slice(1);
+        
+        let param = R.filter(cmd => cmd.indexOf('--') !== 0, remainCmds);
+
+        return R.map(cmd => cmd.replace(/"/g,""),param);
+    }
+    static genReplOpts (cmd:string):Object {
+        let cmds = cmd.split(' ');
+        let remainCmds = cmds.slice(1);
+        let optList = R.filter(cmd => cmd.indexOf('--') == 0, remainCmds);
+
+        let obj = {};
+        R.forEach(x => {
+            let res = x.substring(2).split('=');
+            let name = res[0].trim(); let val:any = true;
+
+            if(res.length > 1) val = res[1].trim();
+            obj[name] = val;
+        } , optList);
+
+        return obj;
+    }
+    static genActions (cmd:string): string[] {
+        let cmds = cmd.split(' ');
+        let keyword = cmds[0];
+
+        let module = '', action = '';
+
+        if(keyword.indexOf('.') < 0){
+            module = 'rps'; action = this.capitalize(keyword);
+        }
+        else {
+            let result = keyword.split('.');
+            module = result[0];
+            action = this.capitalize(result[1]);
+        }
+
+        return [module,action];
+    }
+    static parseAction (rawKeyword:string) : string{
+        let keyword = "";
+        if(rawKeyword.indexOf('.') < 0){
+            keyword = "rps." + Translator.capitalize(rawKeyword);
+        }
+        else {
+            let kw = rawKeyword.split(".");
+            keyword = kw[0]+"."+Translator.capitalize(kw[1]);
+        }
+
+        return keyword;
     }
 }

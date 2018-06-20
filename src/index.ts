@@ -8,13 +8,13 @@ function exec () {
 
 }
 
-let parse = function (filePath:string) : Promise<RpsContext> {
-    let runner = new Runner();
-    return runner.convertToTS(filePath);
-}
+// let parse = function (filePath:string) : Promise<RpsContext> {
+//     let runner = new Runner();
+//     return runner.convertToTS(filePath);
+// }
 
 module.exports = {
     run:exec,
-    parser:parse,
+    // parser:parse,
     validate:valid
 };

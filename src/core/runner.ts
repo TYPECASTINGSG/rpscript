@@ -7,18 +7,25 @@ import {RPScriptParser} from '../antlr/grammar/RPScriptParser';
 import {RPScriptLexer} from '../antlr/grammar/RPScriptLexer';
 import {RPScriptListener} from '../antlr/grammar/RPScriptListener';
 
-import {RpsTranspileListener,ErrorCollectorListener} from '../antlr/RpsListener';
+import {RpsTranspileListener,RpsReplListener,ErrorCollectorListener} from '../antlr/RpsListener';
 
 import {Deferred} from "ts-deferred";
 
 import { Linter, Configuration } from "tslint";
 import { EventEmitter } from 'events';
 
+var _eval = require('eval');
+import rps from 'rpscript-api';
+import {RpsContext, common, desktop, chrome, file, functional, test } from 'rpscript-api';
+import repl from 'repl';
+
 
 export class Runner{
     config:any;
     runnerListener:EventEmitter;
     l:Logger;
+
+    replSvr;
 
     constructor(){
         this.config = JSON.parse(fs.readFileSync(`${__dirname}/rpsconfig.default.json`,'utf-8'));
@@ -31,37 +38,19 @@ export class Runner{
         this.l = Logger.getInstance();
     }
 
-    async convertToTS (filepath:string) : Promise<any>{
-        //read content from file
-        let content = fs.readFileSync(filepath,'utf-8');
+    async execute (filepath:string) :Promise<EventEmitter>{
+        let rpsContent = fs.readFileSync(filepath,'utf8');
 
-        //generate default parse tree
-        let parser = this.parseTree(content);
+        let tsContent = await this.compile(rpsContent,false);
+        let context = this.initializeContext({});
 
-        // this.addErrorListener(parser);
-        
-        let tree = parser.program();
-    
-        try{
-            let output = await this.transpile(tree);
-            let fileOutputPath = this.config['outputDir'] + '/'+ this.getFileName(filepath)+'.ts'; 
-            
-            //write to file
-            fs.writeFileSync(`${fileOutputPath}`,output);
+        fs.writeFileSync('.rpscript/temp.ts',tsContent);
 
-            return Promise.resolve(output);
-        }catch(err) {
-            return Promise.reject(err);
-        }
-        
-    }
+        this.runnerListener = await _eval(tsContent,context,true);
 
-    async run (filepath:string) : Promise<any> {
+
         this.l.createRunnerLogger( this.getFileName(filepath) );
 
-        let fullPath = `${process.cwd()}/${filepath}`;
-
-        this.runnerListener = require(fullPath);
 
         this.runnerListener.on('runner.start', (...params) => {
             this.l.runnerLogger.info('started');
@@ -75,8 +64,73 @@ export class Runner{
 
         return Promise.resolve(this.runnerListener);
     }
+
+    async repl () {
+        this.replSvr = repl.start({
+            prompt:'rpscript action > ',
+            eval: async (cmd, context, filename, callback) => {
+                cmd = cmd.replace(/(\r\n\t|\n|\r\t)/gm,"");
+        
+                let tsContent = await this.compile(cmd,true);
+
+                let output = await _eval(tsContent,context,true);
+                
+                callback(null, output.$RESULT);
+            }});
     
-    linting (filepath:string) : any {
+        this.initializeContext(this.replSvr.context);
+    
+        this.replSvr.on('reset', this.initializeContext);
+    
+        // this.replSvr.defineCommand('actions', function actions() {
+        //   console.log('List all actions');
+        // });
+    }
+
+
+    //involve 2 steps : convertToTS , then Linting
+    async compile (rpsContent:string, isRepl:boolean) :Promise<string>{
+        let tsContent = await this.convertToTS(rpsContent,isRepl);
+        
+        let lintResult = this.linting(tsContent);
+        
+        if(lintResult.error>0)
+            return Promise.reject(lintResult);
+
+        return Promise.resolve(tsContent);
+    }
+
+    initializeContext(context) {
+        context.rps = rps;
+        context.RpsContext = RpsContext;
+        context.common = common;
+        context.desktop = desktop;
+        context.chrome = chrome;
+        context.file = file;
+        context.functional = functional;
+        context.test = test;
+        context.EventEmitter = EventEmitter;
+    
+        context.$CONTEXT = new RpsContext();
+        context.$RESULT = null;
+
+        return context;
+    }
+
+    async convertToTS(content:string, isRepl:boolean) : Promise<string> {
+        try{
+            let parser = this.parseTree(content);
+
+            let output = await this.transpile(parser.program() , isRepl);
+
+            return Promise.resolve(output);
+        }catch(err) {
+            return Promise.reject(err);
+        }
+    }
+
+    
+    linting (tsContent:string) : any {
 
         const configurationFilename = "tsconfig.json";
         const options = {
@@ -86,11 +140,10 @@ export class Runner{
             formattersDirectory: "customFormatters/"
         };
         
-        const fileContents = fs.readFileSync(filepath, "utf8");
         const linter = new Linter(options);
-        const configLoad = Configuration.findConfiguration(configurationFilename, filepath);
+        const configLoad = Configuration.findConfiguration(configurationFilename, "");
         
-        linter.lint(filepath, fileContents, configLoad.results);
+        linter.lint("", tsContent, configLoad.results);
         
         const result = linter.getResult();
 
@@ -109,9 +162,9 @@ export class Runner{
         return filepath.substring(index+1,dotIndex);
     }
 
-    private transpile (tree) :Promise<string>{
+    private transpile (tree, isRepl:boolean) :Promise<string>{
         let d = new Deferred<any>();
-        let intentListener:RPScriptListener = new RpsTranspileListener(d);
+        let intentListener:RPScriptListener = isRepl ? new RpsReplListener(d) : new RpsTranspileListener(d);
 
         ParseTreeWalker.DEFAULT.walk(intentListener, tree);
         
@@ -126,3 +179,4 @@ export class Runner{
     }
 
 }
+
