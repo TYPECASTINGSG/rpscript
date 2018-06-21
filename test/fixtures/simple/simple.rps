@@ -1,0 +1,3 @@
+open "README.md"
+wait 3
+keyboard "hello readme"

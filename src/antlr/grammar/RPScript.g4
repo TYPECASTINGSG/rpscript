@@ -17,7 +17,7 @@ statement
     | switchStatement
     | namedFn;
 
-statementList : statement+ ;
+statementList : statement+;
 pipeActions : action (PIPE action)+;
 singleAction : action;
 comment : COMMENT;
@@ -29,7 +29,7 @@ namedFn : DIRECTIVE WORD VARIABLE* block;
 action : WORD paramList optList ;
 
 paramList : param*;
-param : literal | variable | anonFn;
+param : literal | variable | anonFn | symbol;
 
 optList : opt*;
 opt   : '--' optName ('='literal)?;
@@ -69,6 +69,7 @@ literal
     : NullLiteral | BooleanLiteral
     | StringLiteral | TemplateStringLiteral
     | DecimalLiteral;
+symbol : SYMBOL;
     
 optName : WORD ;
 objectLiteral
@@ -123,6 +124,8 @@ StringLiteral:                 ('"' DoubleStringCharacter* '"'
 
 TemplateStringLiteral:          '`' ('\\`' | ~'`')* '`';
 
+// KEYWORD  : [a-z][a-zA-Z0-9.]*;
+SYMBOL  : [A-Z][a-zA-Z0-9.]*;
 WORD  : [a-zA-Z0-9]+;
 
 fragment DoubleStringCharacter       : ~["\\\r\n] | LineContinuation ;

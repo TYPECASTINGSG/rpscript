@@ -1,0 +1,10 @@
+include "./helper/browser"
+read "unknown.txt"
+@crawlSite "https://www.dilbert.com"
+@nameFn $RESULT
+
+
+@nameFn $output { 
+    echo $output
+}
+

@@ -1,4 +1,5 @@
 import program from "commander";
+import R from 'ramda';
 
 import {ReplCommand} from './commands/repl';
 import {VersionCommand} from './commands/version';
@@ -11,7 +12,10 @@ program
     let v = new VersionCommand();
     console.log(v.getVersions())
   })
-  .option('-o, --output', 'Output Typescript file')
+  .option('-o, --skipOutputTS', 'Output Typescript file')
+  .option('-l, --skipLinting', 'Lint Output Typescript file')
+  .option('-s, --skipRun', 'Skip running the program')
+  .option('-d, --outputDir <path>', 'Working directory path for logs and temp files')
   .description('******************************************** ' + '\n' +
   "   ____  ____    ____            _       _" + '\n' +
   "  |  _ \\\|  _ \\  / ___|  ___ _ __(_)_ __ | |_ " + '\n' +
@@ -24,70 +28,25 @@ program
 
   program.parse(process.argv);
 
-  // if(process.argv.length < 3)
-  //   program.help();
-
   let filename = undefined;
-  let command = new ReplCommand();
+  let command = new ReplCommand(
+    R.pickBy((v,k)=> v !== undefined,
+      {
+        outputTS:program.skipOutputTS, linting:program.skipLinting, 
+        outputDir:program.outputDir,skipRun:program.skipRun
+      })
+    );
 
-  if(process.argv.length < 3) {
-    
+  let hasRpsFile:boolean = R.any(arg => arg.indexOf('.rps')>0, process.argv);
+
+  if(process.argv.length < 3){
     command.repl();
-
-  }else if(process.argv[2].indexOf('.rps')>0) {
-    
+  }
+  else if(process.argv[2].indexOf('.rps')>0) { 
     filename = process.argv[2];
     command.run(filename);
-  
+  }else if (!hasRpsFile){
+    command.repl();
   }
   
-  
-
-  // console.log(program.output);
-
-  // program
-  // .command('*')
-  // .description(RUN_DESCRIPTION)
-  // .on('--help', () => {
-  //   console.log(RUN_HELP)
-  // })
-  // .action (async (filename, cmd) => {
-  //   console.log('runnnn...');
-  //   // let execCom = new ExecCommand();
-  //   // await execCom.execute(filename);
-  // });
-
-//  program
-//   .command('run <filename>')
-//   .description(RUN_DESCRIPTION)
-//   .on('--help', () => {
-//     console.log(RUN_HELP)
-//   })
-//   .action (async (filename, cmd) => {
-//     let execCom = new ExecCommand();
-//     await execCom.execute(filename);
-//   });
-
-//   program
-//   .command('compile <filename>')
-//   .description(COMPILE_DESCRIPTION)
-//   .on('--help', () => {
-//     console.log(COMPILE_HELP)
-//   })
-//   .action ((filename, cmd) => {
-//     let compileCom = new CompileCommand();
-//     compileCom.execute(filename);
-//   });
-
-//   program
-//   .command('repl')
-//   .description(REPL_DESCRIPTION)
-//   .on('--help', () => {
-//     console.log(REPL_HELP)
-//   })
-//   .action ((dir, cmd) => {
-//     let replCom = new ReplCommand();
-//     replCom.execute();
-//   });
-
 

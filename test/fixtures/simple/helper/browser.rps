@@ -1,0 +1,9 @@
+@crawlSite $url {
+    chrome $url
+    pdf --saveTo "site.pdf"
+    close $url
+}
+
+@printResult $result {
+    echo $result
+}

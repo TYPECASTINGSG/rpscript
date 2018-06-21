@@ -1,0 +1,3 @@
+    browser "https://www.google.com.sg"
+    once $RESULT 'load'
+    eval `alert('page loaded)`

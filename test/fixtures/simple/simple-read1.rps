@@ -1,0 +1,4 @@
+read "unknown.txt"
+write "something.txt" "content here"
+exists "something.txt"
+expect $RESULT To Be True

@@ -1,0 +1,16 @@
+@try{
+    open "http://dilbert.com/"
+    wait 5
+    screenshot --path='dilbert-page.png'
+    wait 3
+    $ "div.comic-item-container:nth-child(1) > div:nth-child(1) > section:nth-child(1) > div:nth-child(3) > a:nth-child(1) > img:nth-child(1)"
+    wait 1
+    screenshot --path='dilbert-cartoon.png'
+    wait 2
+    close 
+    expect true to be true
+}@catch $err {
+    notify "Error" err.message
+    
+    expect false to be true
+}

@@ -1,0 +1,3 @@
+open "https://www.google.com.sg"
+wait 5
+type "Hello wei"

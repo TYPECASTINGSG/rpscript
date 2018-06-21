@@ -1,0 +1,16 @@
+declare sites ["siteA","siteB"]
+open "about:blank"
+wait 2
+forEach sites @testCaseSite
+testRun
+wait 3
+close
+open "report.html"
+
+@testCaseSite $site {
+   testCase `should be ok ${site}`, {
+     goto $site
+     expect $RESULT.ok() to be true
+   } 
+ }
+

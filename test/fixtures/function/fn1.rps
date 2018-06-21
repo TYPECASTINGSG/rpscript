@@ -1,0 +1,9 @@
+@openGoogle{
+  open "google.com.sg"
+  kill 
+}
+
+@openUrl $url {
+  open $url
+  shutdown
+}

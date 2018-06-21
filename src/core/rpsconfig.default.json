@@ -1,3 +1,6 @@
 {
-    "outputDir":".rpscript"
+    "outputDir":".rpscript",
+    "skipLinting":false,
+    "skipOutputTS":false,
+    "skipRun":false
 }

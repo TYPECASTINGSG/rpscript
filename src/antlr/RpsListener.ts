@@ -25,49 +25,40 @@ export class RpsTranspileListener implements RPScriptListener {
   }
 
   public enterProgram(ctx: ProgramContext) : void{
-    
-    this.logger.log('debug','enterProgram : '+ctx.text);
-
     this.translator = new Translator();
-    this.translator.genBoilerHeader();
 
-    this.logger.log('debug','gen : '+this.translator.content);
+    this.translator.content += this.translator.globalEventDeclare;
+
+    this.translator.content += this.translator.mainSectionStart;
   }
   public exitProgram(ctx: ProgramContext) : void{
-    this.logger.log('debug','exitProgram : '+ctx.text);
-    this.logger.log('debug','gen : '+this.translator.content);
+    this.translator.content += this.translator.mainSectionEnd;
+    this.translator.content += "\n";
+    this.translator.content += this.translator.fnSection;
+    this.translator.content += "\n";
+    this.translator.content += this.translator.runSect;
 
-    this.translator.appendBottom();
+    //prepend
+    this.translator.content = this.translator.importSection + this.translator.content;
 
     if(ctx.exception) this.deferred.reject(ctx.exception)
     else this.deferred.resolve(this.translator.content);
   }
 
   public enterBlock(ctx:BlockContext) : void {
-    this.logger.log('debug','enterBlock : '+ctx.text);
-    this.translator.genBlock(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    if(this.hasFnParent(ctx)) this.translator.fnSection += this.translator.startBlock;
+    else this.translator.content += this.translator.startBlock;
   }
   public exitBlock(ctx:BlockContext) : void {
-    this.logger.log('debug','exitBlock : '+ctx.text);
-    this.translator.closeBlock(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    if(this.hasFnParent(ctx)) this.translator.fnSection += this.translator.endBlock;
+    else this.translator.content += this.translator.endBlock;
   }
 
   public enterPipeActions(ctx:PipeActionsContext) : void {
-    // this.logger.log('debug','enterPipeline : '+ctx.text);
-  }
-
-  public enterSingleAction(ctx:SingleActionContext) : void {
-    this.logger.log('debug','enterSingleAction : '+ctx.text);
-  }
-  public exitSingleAction(ctx:SingleActionContext) : void {
-    this.logger.log('debug','exitSingleAction : '+ctx.text);
   }
 
   public enterComment(ctx:CommentContext) : void {
-    this.logger.log('debug','enterComment : '+ctx.text);
-    this.translator.genComment(ctx);
+    this.translator.content += this.translator.genComment(ctx);
   }
   public enterIfStatement(ctx:IfStatementContext) : void {
     // this.logger.log('debug','enterIf : '+ctx.text);
@@ -78,67 +69,45 @@ export class RpsTranspileListener implements RPScriptListener {
     // this.translator.genSwitchStatement(ctx);
   }
   public enterNamedFn(ctx:NamedFnContext) : void {
-    this.logger.log('debug','enterNamedFn : '+ctx.text);
-    this.translator.genNamedFn(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    this.translator.fnSection += this.translator.genNamedFn(ctx);
   }
 
   public enterAction(ctx:ActionContext) : void {
-    this.logger.log('debug','enterAction : '+ctx.text);
-    this.translator.genAction(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+
+    if(this.hasFnParent(ctx)) this.translator.fnSection += this.translator.startAction(ctx);
+    else this.translator.content += this.translator.startAction(ctx);
   }
   public exitAction(ctx:ActionContext) : void {
-    this.logger.log('debug','exitAction : '+ctx.text);
-    this.translator.closeAction(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
-  }
-  public enterParamList(ctx:ParamListContext) : void {
-    // this.logger.log('debug','enterParamList : '+ctx.text);
-    // this.translator.genParamList(ctx);
-    // this.logger.log('debug','gen : '+this.translator.content);
-  }
-  public exitParamList(ctx:ParamListContext) : void {
-    // this.logger.log('debug','exitParamList : '+ctx.text);
+    if(this.hasFnParent(ctx)) this.translator.fnSection += this.translator.closeAction(ctx);
+    else this.translator.content += this.translator.closeAction(ctx);
   }
 
-  public enterParam(ctx:ParamContext) : void {
-    // this.logger.log('debug','enterParam : '+ctx.text);
-  }
-  public exitParam(ctx:ParamContext) : void {
-    // this.logger.log('debug','exitParam : '+ctx.text);
-    // this.translator.appendComma();
-    // this.logger.log('debug','gen : '+this.translator.content);
-  }
-
-  public enterOptList(ctx:OptListContext) : void {
-    // this.logger.log('debug','enterOptList : '+ctx.text);
-    // this.translator.genOptList(ctx);
-    // this.logger.log('debug','gen : '+this.translator.content);
-  }
-  public exitOptList(ctx:OptListContext) : void {
-    // this.logger.log('debug','exitOptList : '+ctx.text);
+  private hasFnParent(ctx:any) : boolean{
+    let ctxTemp:any = ctx;
+    let isFnParent:boolean = false;
+    while (ctxTemp){
+      if('NamedFnContext' === ctxTemp.constructor.name){
+        isFnParent = true;
+        break;
+      }
+      ctxTemp = ctxTemp.parent;
+    }
+    return isFnParent;
   }
 
-  public enterVariable(ctx:VariableContext) : void {
-    // this.logger.log('debug','enterVariable : '+ctx.text);
-    // this.translator.genVariable(ctx);
-    // this.logger.log('debug','gen : '+this.translator.content);
-  }
-
-  public enterLiteral(ctx:LiteralContext) : void {
-    // this.logger.log('debug','enterLiteral : '+ctx.text);
-    // this.translator.genLiteral(ctx);
-    // this.logger.log('debug','gen : '+this.translator.content);
-  }
+  public enterParamList(ctx:ParamListContext) : void {}
+  public exitParamList(ctx:ParamListContext) : void {}
+  public enterParam(ctx:ParamContext) : void {}
+  public exitParam(ctx:ParamContext) : void {}
+  public enterOptList(ctx:OptListContext) : void {}
+  public exitOptList(ctx:OptListContext) : void {}
+  public enterVariable(ctx:VariableContext) : void {}
+  public enterLiteral(ctx:LiteralContext) : void {}
 
   public enterAnonFn(ctx:AnonFnContext) : void{
-    this.logger.log('debug','enterAnonFn : '+ctx.text);
-    this.translator.genAnonFn(ctx);
-    this.logger.log('debug','gen : '+this.translator.content);
+    // this.translator.genAnonFn(ctx);
   }
   public exitAnonFn(ctx:AnonFnContext) : void{
-    this.logger.log('debug','exitAnonFn : '+ctx.text);
   }
 
 }
@@ -170,7 +139,7 @@ export class RpsReplListener extends RpsTranspileListener {
     this.logger.log('debug','exitProgram : '+ctx.text);
     this.logger.log('debug','gen : '+this.translator.content);
 
-    this.translator.content += "\n   module.exports = $CONTEXT";
+    // this.translator.content += "\n   module.exports = $CONTEXT";
     // this.translator.appendBottom();
 
     if(ctx.exception) this.deferred.reject(ctx.exception)

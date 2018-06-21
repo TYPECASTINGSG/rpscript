@@ -5,8 +5,8 @@ export class ReplCommand {
   replSvr;
   runner:Runner;
 
-  constructor() {
-    this.runner = new Runner();
+  constructor(config) {
+    this.runner = new Runner(config);
   }
 
   run(filename:string){

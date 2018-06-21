@@ -1,0 +1,4 @@
+    let mapFn = await functional.Map($CONTEXT,{},double);
+    let result = mapFn(inputs);
+
+    c.expect(result).to.have.same.members([2,4,6,8]);

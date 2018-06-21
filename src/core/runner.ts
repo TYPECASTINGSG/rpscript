@@ -1,5 +1,6 @@
 import fs from 'fs';
 import {Logger} from './logger';
+import R from 'ramda';
 import { ANTLRInputStream, CommonTokenStream } from 'antlr4ts';
 import { ParseTreeWalker } from "antlr4ts/tree/ParseTreeWalker";
 
@@ -11,24 +12,32 @@ import {RpsTranspileListener,RpsReplListener,ErrorCollectorListener} from '../an
 
 import {Deferred} from "ts-deferred";
 
-import { Linter, Configuration } from "tslint";
+import { Linter, Configuration, LintResult } from "tslint";
 import { EventEmitter } from 'events';
 
 var _eval = require('eval');
-import rps from 'rpscript-api';
-import {RpsContext, common, desktop, chrome, file, functional, test } from 'rpscript-api';
+import {RpsContext} from './actions';
+import * as api from './actions';
 import repl from 'repl';
 
+export interface RpsMainConfig{
+    outputDir?:string;
+    skipLinting?:boolean;
+    skipOutputTS?:boolean;
+    skipRun?:boolean;
+}
 
 export class Runner{
-    config:any;
+    config:RpsMainConfig;
     runnerListener:EventEmitter;
     l:Logger;
 
     replSvr;
 
-    constructor(){
-        this.config = JSON.parse(fs.readFileSync(`${__dirname}/rpsconfig.default.json`,'utf-8'));
+    constructor(config:RpsMainConfig){
+        let defaultConfig = JSON.parse(fs.readFileSync(`${__dirname}/rpsconfig.default.json`,'utf-8'));
+        this.config = R.merge(defaultConfig, config);
+        
         
         if(!fs.existsSync(this.config['outputDir'])) {
             fs.mkdirSync(this.config['outputDir']);
@@ -38,16 +47,20 @@ export class Runner{
         this.l = Logger.getInstance();
     }
 
-    async execute (filepath:string) :Promise<EventEmitter>{
+    //process: 1. compile to TS (antlr) , 2. linting , 3. eval (require)
+    // compile time handling 3 steps
+    //run time handling
+    async execute (filepath:string) :Promise<EventEmitter|string>{
         let rpsContent = fs.readFileSync(filepath,'utf8');
 
         let tsContent = await this.compile(rpsContent,false);
         let context = this.initializeContext({});
 
-        fs.writeFileSync('.rpscript/temp.ts',tsContent);
+        if(!this.config.skipOutputTS) fs.writeFileSync('.rpscript/temp.ts',tsContent);
+
+        if(this.config.skipRun) return Promise.resolve(tsContent);
 
         this.runnerListener = await _eval(tsContent,context,true);
-
 
         this.l.createRunnerLogger( this.getFileName(filepath) );
 
@@ -92,23 +105,32 @@ export class Runner{
     async compile (rpsContent:string, isRepl:boolean) :Promise<string>{
         let tsContent = await this.convertToTS(rpsContent,isRepl);
         
-        let lintResult = this.linting(tsContent);
+        if(!this.config.skipLinting) {
+            let lintResult = this.linting(tsContent);
         
-        if(lintResult.error>0)
-            return Promise.reject(lintResult);
+            this.printLintingResult(lintResult);
 
+            if(lintResult.errorCount>0)
+                return Promise.reject(lintResult);
+        }
+        
         return Promise.resolve(tsContent);
     }
 
+    printLintingResult (result:LintResult) {
+        // console.log(result);
+    }
+
     initializeContext(context) {
-        context.rps = rps;
+        // context.rps = rps;
+        // context.common = common;
+        // context.desktop = desktop;
+        // context.chrome = chrome;
+        // context.file = file;
+        // context.functional = functional;
+        // context.test = test;
+        context.api = api;
         context.RpsContext = RpsContext;
-        context.common = common;
-        context.desktop = desktop;
-        context.chrome = chrome;
-        context.file = file;
-        context.functional = functional;
-        context.test = test;
         context.EventEmitter = EventEmitter;
     
         context.$CONTEXT = new RpsContext();
@@ -130,8 +152,7 @@ export class Runner{
     }
 
     
-    linting (tsContent:string) : any {
-
+    linting (tsContent:string) : LintResult {
         const configurationFilename = "tsconfig.json";
         const options = {
             fix:false,

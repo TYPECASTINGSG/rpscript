@@ -1,0 +1,21 @@
+    declare $sites [
+        'https://www.github.com', 'https://www.google.com.sg',
+        'https://mochajs.org','http://www.theuselessweb.com/','https://www.facebook.com/',
+        'http://somewebsite.co/']
+
+    open "about:blank" --headless=true
+
+    wait 2
+
+    forEach $sites @ $site {
+        testCase "should be ok ${site}" @ {
+            goto $site
+            expect $RESULT.ok() to be true
+        }
+    }
+
+    testReport
+    wait 3
+    close
+    
+    open "./mochawesome-report/mochawesome.html"

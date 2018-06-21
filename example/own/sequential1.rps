@@ -1,0 +1,3 @@
+chrome.open "http://www.google.com.sg"
+wait 3
+chrome.type "#lst-ib" "Hello wei"
