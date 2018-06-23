@@ -13,7 +13,8 @@ export class ReplCommand {
     this.runner.execute(filename);
   }
   repl(){
-    this.runner.repl();
+    console.log('TODO: REPL');
+    // this.runner.repl();
   }
 
 }

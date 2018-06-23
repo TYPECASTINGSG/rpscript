@@ -8,7 +8,7 @@ import {RPScriptParser} from '../antlr/grammar/RPScriptParser';
 import {RPScriptLexer} from '../antlr/grammar/RPScriptLexer';
 import {RPScriptListener} from '../antlr/grammar/RPScriptListener';
 
-import {RpsTranspileListener,RpsReplListener,ErrorCollectorListener} from '../antlr/RpsListener';
+import {RpsTranspileListener,ErrorCollectorListener} from '../antlr/RpsListener';
 
 import {Deferred} from "ts-deferred";
 
@@ -18,7 +18,9 @@ import { EventEmitter } from 'events';
 var _eval = require('eval');
 import {RpsContext} from './actions';
 import * as api from './actions';
-import repl from 'repl';
+import {TranspileContent} from '../antlr/RpsListener';
+
+// import {Translator} from './translator';
 
 export interface RpsMainConfig{
     outputDir?:string;
@@ -53,7 +55,7 @@ export class Runner{
     async execute (filepath:string) :Promise<EventEmitter|string>{
         let rpsContent = fs.readFileSync(filepath,'utf8');
 
-        let tsContent = await this.compile(rpsContent,false);
+        let tsContent = await this.compile(filepath,rpsContent,false);
         let context = this.initializeContext({});
 
         if(!this.config.skipOutputTS) fs.writeFileSync('.rpscript/temp.ts',tsContent);
@@ -78,32 +80,29 @@ export class Runner{
         return Promise.resolve(this.runnerListener);
     }
 
-    async repl () {
-        this.replSvr = repl.start({
-            prompt:'rpscript action > ',
-            eval: async (cmd, context, filename, callback) => {
-                cmd = cmd.replace(/(\r\n\t|\n|\r\t)/gm,"");
+    // async repl () {
+    //     this.replSvr = repl.start({
+    //         prompt:'rpscript action > ',
+    //         eval: async (cmd, context, filename, callback) => {
+    //             cmd = cmd.replace(/(\r\n\t|\n|\r\t)/gm,"");
         
-                let tsContent = await this.compile(cmd,true);
+    //             let tsContent = await this.compile(cmd,true);
 
-                let output = await _eval(tsContent,context,true);
+    //             let output = await _eval(tsContent,context,true);
                 
-                callback(null, output.$RESULT);
-            }});
+    //             callback(null, output.$RESULT);
+    //         }});
     
-        this.initializeContext(this.replSvr.context);
+    //     this.initializeContext(this.replSvr.context);
     
-        this.replSvr.on('reset', this.initializeContext);
-    
-        // this.replSvr.defineCommand('actions', function actions() {
-        //   console.log('List all actions');
-        // });
-    }
+    //     this.replSvr.on('reset', this.initializeContext);
+    // }
 
 
     //involve 2 steps : convertToTS , then Linting
-    async compile (rpsContent:string, isRepl:boolean) :Promise<string>{
-        let tsContent = await this.convertToTS(rpsContent,isRepl);
+    async compile (filepath:string, rpsContent:string, isRepl:boolean) :Promise<string>{
+        let result = await Runner.convertToTS(filepath, rpsContent,isRepl);
+        let tsContent = result.fullContent;
         
         if(!this.config.skipLinting) {
             let lintResult = this.linting(tsContent);
@@ -122,13 +121,6 @@ export class Runner{
     }
 
     initializeContext(context) {
-        // context.rps = rps;
-        // context.common = common;
-        // context.desktop = desktop;
-        // context.chrome = chrome;
-        // context.file = file;
-        // context.functional = functional;
-        // context.test = test;
         context.api = api;
         context.RpsContext = RpsContext;
         context.EventEmitter = EventEmitter;
@@ -139,11 +131,11 @@ export class Runner{
         return context;
     }
 
-    async convertToTS(content:string, isRepl:boolean) : Promise<string> {
+    static async convertToTS(filepath:string, content:string, isRepl:boolean) : Promise<TranspileContent> {
         try{
             let parser = this.parseTree(content);
 
-            let output = await this.transpile(parser.program() , isRepl);
+            let output = await this.transpile(filepath, parser.program() , isRepl);
 
             return Promise.resolve(output);
         }catch(err) {
@@ -183,16 +175,16 @@ export class Runner{
         return filepath.substring(index+1,dotIndex);
     }
 
-    private transpile (tree, isRepl:boolean) :Promise<string>{
+    private static transpile (filepath:string, tree, isRepl:boolean) :Promise<TranspileContent>{
         let d = new Deferred<any>();
-        let intentListener:RPScriptListener = isRepl ? new RpsReplListener(d) : new RpsTranspileListener(d);
+        let intentListener:RPScriptListener = new RpsTranspileListener(d,filepath);
 
         ParseTreeWalker.DEFAULT.walk(intentListener, tree);
         
         return d.promise;
      }
     
-    private parseTree(input:string) :RPScriptParser {
+    private static parseTree(input:string) :RPScriptParser {
         let inputStream = new ANTLRInputStream(input);
         let tokenStream = new CommonTokenStream( new RPScriptLexer(inputStream) );
 

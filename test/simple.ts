@@ -4,7 +4,7 @@ import {ReplCommand} from '../src/commands/repl';
 
 describe('Simple test', () => {
 
-  it('should run simple-read1.rps', () => {
+  it.only('should run simple-read1.rps', () => {
     let filename = './test/fixtures/simple/simple-read1.1.rps';
     new ReplCommand({skipRun:true}).run(filename);
   });
@@ -14,7 +14,7 @@ describe('Simple test', () => {
     new ReplCommand({skipRun:true}).run(filename);
   });
 
-  it.only('should run fn1.rps', () => {
+  it('should run fn1.rps', () => {
     let filename = './test/fixtures/function/fn1.rps';
     new ReplCommand({skipRun:true}).run(filename);
   });

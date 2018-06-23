@@ -9,27 +9,32 @@ sourceElements
     ;
 
 statement
-    : block
-    | pipeActions
-    | singleAction
+    // block
+    : pipeActions (NL|EOF)
+    | singleAction (NL|EOF)
     | comment
+    | exeFn
     | ifStatement
     | switchStatement
-    | namedFn;
+    | namedFn
+    | NL
+    | include NL;
 
 statementList : statement+;
-pipeActions : action (PIPE action)+;
+
+pipeActions : action PIPE action;
 singleAction : action;
 comment : COMMENT;
 ifStatement : DIRECTIVE IF '(' singleExpression ')' statement (DIRECTIVE ELSE statement)?;
 switchStatement : DIRECTIVE SWITCH '(' singleExpression ')' caseBlock;
-    
 namedFn : DIRECTIVE WORD VARIABLE* block;
+exeFn   : DIRECTIVE WORD VARIABLE*;
+include : INCLUDE StringLiteral;
 
 action : WORD paramList optList ;
 
 paramList : param*;
-param : literal | variable | anonFn | symbol;
+param : literal | variable | anonFn | symbol | action | singleExpression;
 
 optList : opt*;
 opt   : '--' optName ('='literal)?;
@@ -103,12 +108,14 @@ DEFAULT                  : 'default';
 FOR                     : 'for';
 IN                      : 'in';
 IMPORT                  : 'import';
+INCLUDE                 : 'include';
 
 // ACTION                 : [a-z][a-zA-Z0-9]*;
 VARIABLE                : [$] WORD ' '*;
 PIPE                    : '|';
 
-COMMENT : ';' ~[\r\n]*;
+// COMMENT : ';' ~[\r\n]*;
+COMMENT : ';' ~[\r\n]* -> channel(HIDDEN);
 
 
 NullLiteral: 'null';
@@ -133,5 +140,7 @@ fragment SingleStringCharacter       : ~['\\\r\n] | LineContinuation ;
 fragment LineContinuation            : '\\' [\r\n\u2028\u2029] ;
 fragment DecimalIntegerLiteral       : '0' | [1-9] [0-9]* ;
 fragment ExponentPart                : [eE] [+-]? [0-9]+ ;
+
+NL : '\n';
 
 WS : [ \t\r\n]+ -> skip ;
