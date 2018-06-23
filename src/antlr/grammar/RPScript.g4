@@ -9,13 +9,11 @@ sourceElements
     ;
 
 statement
-    // block
     : pipeActions (NL|EOF)
     | singleAction (NL|EOF)
     | comment
     | exeFn
-    | ifStatement
-    | switchStatement
+    | ifelseStatement
     | namedFn
     | NL
     | include NL;
@@ -25,11 +23,22 @@ statementList : statement+;
 pipeActions : action PIPE action;
 singleAction : action;
 comment : COMMENT;
-ifStatement : DIRECTIVE IF '(' singleExpression ')' statement (DIRECTIVE ELSE statement)?;
-switchStatement : DIRECTIVE SWITCH '(' singleExpression ')' caseBlock;
+
+ifelseStatement : ifStatement elifStatement* elseStatement?;
+
+ifStatement : DIRECTIVE IF singleExpression '{' statementList '}' NL*;
+elifStatement : DIRECTIVE ELIF singleExpression '{' statementList '}' NL*;
+elseStatement : DIRECTIVE ELSE '{' statementList '}';
+
+//maybe replace it with $CONTEXT.$ERROR
+// tryStatement : TODO
+
+
 namedFn : DIRECTIVE WORD VARIABLE* block;
-exeFn   : DIRECTIVE WORD VARIABLE*;
-include : INCLUDE StringLiteral;
+
+exeFn   : DIRECTIVE WORD param*;
+
+include : DIRECTIVE INCLUDE StringLiteral;
 
 action : WORD paramList optList ;
 
@@ -40,13 +49,6 @@ optList : opt*;
 opt   : '--' optName ('='literal)?;
 
 block : '{' statementList '}';
-
-caseBlock
-    : '{' caseClauses? (defaultClause caseClauses?)? '}' ;
-
-caseClauses : caseClause+;
-caseClause : DIRECTIVE CASE WORD ':' statementList? ;
-defaultClause : DIRECTIVE DEFAULT ':' statementList? ;
 
 anonFn : DIRECTIVE VARIABLE* block;
 
@@ -101,16 +103,11 @@ eos : EOF;
 DIRECTIVE               : '@';
 
 IF                      : 'if';
+ELIF                    : 'elif';
 ELSE                    : 'else';
-SWITCH                  : 'switch';
-CASE                    : 'case';
-DEFAULT                  : 'default';
-FOR                     : 'for';
 IN                      : 'in';
-IMPORT                  : 'import';
 INCLUDE                 : 'include';
 
-// ACTION                 : [a-z][a-zA-Z0-9]*;
 VARIABLE                : [$] WORD ' '*;
 PIPE                    : '|';
 
@@ -141,6 +138,7 @@ fragment LineContinuation            : '\\' [\r\n\u2028\u2029] ;
 fragment DecimalIntegerLiteral       : '0' | [1-9] [0-9]* ;
 fragment ExponentPart                : [eE] [+-]? [0-9]+ ;
 
-NL : '\n';
+NL : '\r'? '\n';
 
-WS : [ \t\r\n]+ -> skip ;
+// WS : [ \t\r\n]+ -> skip ;
+WS : [ \t]+ -> skip ;

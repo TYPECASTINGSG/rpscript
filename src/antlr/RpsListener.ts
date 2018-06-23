@@ -2,16 +2,17 @@ import {Deferred} from "ts-deferred";
 import {Logger} from '../core/logger';
 import fs from 'fs';
 import R from 'ramda';
-import {ANTLRErrorListener,Recognizer,RecognitionException, ParserRuleContext} from 'antlr4ts';
+import {ParserRuleContext} from 'antlr4ts';
 
 import {RPScriptListener} from './grammar/RPScriptListener';
-import {IncludeContext,SymbolContext, VariableContext,LiteralContext,OptListContext,ParamContext,ParamListContext,ProgramContext, BlockContext,PipeActionsContext, SingleActionContext,
-CommentContext, IfStatementContext, SwitchStatementContext, NamedFnContext, ActionContext, AnonFnContext, OptContext} from './grammar/RPScriptParser';
+import {ExeFnContext, IncludeContext,SymbolContext, VariableContext,LiteralContext,OptListContext,ParamContext,ParamListContext,ProgramContext, BlockContext,PipeActionsContext, SingleActionContext,
+CommentContext, IfStatementContext , NamedFnContext, ActionContext, AnonFnContext, OptContext} from './grammar/RPScriptParser';
 
 import {ParseTreeProperty} from 'antlr4ts/tree';
+import {RPScriptParser} from '../antlr/grammar/RPScriptParser';
 
-// import {Translator} from '../core/translator';
 import {Runner} from '../core/runner';
+import { InvalidKeywordException } from "./InvalidKeywordException";
 
 export interface TranspileContent {
   mainContent?:string;
@@ -55,13 +56,15 @@ setTimeout(main, 500);
 
   content:TranspileContent;
   includeContent:IncludeContent[];
+  parser:RPScriptParser;
 
-  constructor(defer:Deferred<any>,filepath:string){
+  constructor(defer:Deferred<any>,filepath:string, parser:RPScriptParser){
     this.deferred = defer;
     this.logger = Logger.getInstance();
     this.filepath = filepath;
     this.parseTreeProperty = new ParseTreeProperty();
     this.scope = "root";
+    this.parser=parser;
     this.content = {
       mainContent:"", fullContent:"",fnContent:""
     }
@@ -69,7 +72,6 @@ setTimeout(main, 500);
   }
 
   public enterProgram(ctx: ProgramContext) : void{
-    // this.translator = new Translator(this.filepath);
   }
   public exitProgram(ctx: ProgramContext) : void{
     
@@ -86,8 +88,8 @@ setTimeout(main, 500);
 
         this.content.fullContent += this.runSect;
   
-        // let content = this.translator.resolveContent();
         this.deferred.resolve(this.content);
+
       });
       
     }
@@ -109,8 +111,7 @@ setTimeout(main, 500);
   }
   public enterIfStatement(ctx:IfStatementContext) : void {
   }
-  public enterSwitchStatement(ctx:SwitchStatementContext) : void {
-  }
+
   public enterNamedFn(ctx:NamedFnContext) : void {
     let vars = R.map(v=>v.text, ctx.VARIABLE());
     this.content.fnContent += `\nasync function ${ctx.WORD().text} (${vars}){\n`;
@@ -118,13 +119,14 @@ setTimeout(main, 500);
   public exitNamedFn(ctx:NamedFnContext) : void {
     this.content.fnContent += '\n}';
   }
-  public enterExeFn(ctx:NamedFnContext) : void {
-    let vars = R.map(v=>v.text, ctx.VARIABLE());
+  public enterExeFn(ctx:ExeFnContext) : void {
+    let vars = R.map(v=>v.text, ctx.param());
     if(this.scope === 'root') this.content.mainContent += `\n\t${ctx.WORD().text}(${vars});\n`;
     else this.content.fnContent += `\n\t${ctx.WORD().text}(${vars});\n`;
   }
 
   public enterAction(ctx:ActionContext) : void {
+    // throw new InvalidKeywordException('WTF : '+ctx.WORD().text);
     this.parseTreeProperty.set(ctx,`\t${ctx.WORD().text}`);
   }
   public exitAction(ctx:ActionContext) : void {
@@ -210,7 +212,8 @@ setTimeout(main, 500);
     
     this.addInclude(includeDir,content);
 
-    Runner.convertToTS(includeDir,content,false).then(tsContent => {
+    let runner = new Runner({skipRun:true});
+    runner.convertToTS(includeDir,content,false).then(tsContent => {
       this.updateIncludeTranslator(includeDir,tsContent.fnContent);
     }).catch(err => {
       console.error('HIGH ALERT!!!!!!');
@@ -255,17 +258,6 @@ setTimeout(main, 500);
     } , opts);
 
     return JSON.stringify(obj);
-  }
-
-}
-export class ErrorCollectorListener implements ANTLRErrorListener<any> {
-
-  syntaxError<T>(
-    recognizer: Recognizer<T, any>, offendingSymbol: T, 
-    line: number, charPositionInLine: number, 
-    msg: string, e: RecognitionException): void {
-
-      console.error("WEIRD STUFF");
   }
 
 }

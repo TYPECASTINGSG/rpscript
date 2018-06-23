@@ -6,9 +6,11 @@ import { ParseTreeWalker } from "antlr4ts/tree/ParseTreeWalker";
 
 import {RPScriptParser} from '../antlr/grammar/RPScriptParser';
 import {RPScriptLexer} from '../antlr/grammar/RPScriptLexer';
+import {RpsTranspileLexer} from '../antlr/RpsTranspileLexer';
 import {RPScriptListener} from '../antlr/grammar/RPScriptListener';
 
-import {RpsTranspileListener,ErrorCollectorListener} from '../antlr/RpsListener';
+import {RpsTranspileListener} from '../antlr/RpsListener';
+import {ErrorCollectorListener,RpsErrorStrategy} from '../antlr/RpsErrorHandling';
 
 import {Deferred} from "ts-deferred";
 
@@ -20,6 +22,7 @@ import {RpsContext} from './actions';
 import * as api from './actions';
 import {TranspileContent} from '../antlr/RpsListener';
 
+import {InvalidKeywordException} from '../antlr/InvalidKeywordException';
 // import {Translator} from './translator';
 
 export interface RpsMainConfig{
@@ -49,6 +52,7 @@ export class Runner{
         this.l = Logger.getInstance();
     }
 
+    //if skip run, return string, also return eventemitter
     //process: 1. compile to TS (antlr) , 2. linting , 3. eval (require)
     // compile time handling 3 steps
     //run time handling
@@ -80,28 +84,11 @@ export class Runner{
         return Promise.resolve(this.runnerListener);
     }
 
-    // async repl () {
-    //     this.replSvr = repl.start({
-    //         prompt:'rpscript action > ',
-    //         eval: async (cmd, context, filename, callback) => {
-    //             cmd = cmd.replace(/(\r\n\t|\n|\r\t)/gm,"");
-        
-    //             let tsContent = await this.compile(cmd,true);
-
-    //             let output = await _eval(tsContent,context,true);
-                
-    //             callback(null, output.$RESULT);
-    //         }});
-    
-    //     this.initializeContext(this.replSvr.context);
-    
-    //     this.replSvr.on('reset', this.initializeContext);
-    // }
 
 
     //involve 2 steps : convertToTS , then Linting
     async compile (filepath:string, rpsContent:string, isRepl:boolean) :Promise<string>{
-        let result = await Runner.convertToTS(filepath, rpsContent,isRepl);
+        let result = await this.convertToTS(filepath, rpsContent, isRepl);
         let tsContent = result.fullContent;
         
         if(!this.config.skipLinting) {
@@ -131,15 +118,34 @@ export class Runner{
         return context;
     }
 
-    static async convertToTS(filepath:string, content:string, isRepl:boolean) : Promise<TranspileContent> {
+    async convertToTS(filepath:string, content:string, isRepl:boolean) : Promise<TranspileContent> {
+        let d = new Deferred<TranspileContent>();
+
+        let inputStream = new ANTLRInputStream(content);
+        let lexer = new RpsTranspileLexer(inputStream);
+
+        // lexer.removeErrorListeners();
+
+        let tokenStream = new CommonTokenStream(lexer);
+        let parser = new RPScriptParser(tokenStream);
+
+        // DEPRECATED : parser.errorHandler = new RpsErrorStrategy;
+
+        // parser.removeErrorListeners();
+        parser.addErrorListener(new ErrorCollectorListener);
+
         try{
-            let parser = this.parseTree(content);
+            let intentListener:RPScriptListener = new RpsTranspileListener(d,filepath,parser);
+            let context = parser.program();
+    
+            ParseTreeWalker.DEFAULT.walk(intentListener, context);
 
-            let output = await this.transpile(filepath, parser.program() , isRepl);
-
-            return Promise.resolve(output);
-        }catch(err) {
-            return Promise.reject(err);
+            return d.promise;
+        }catch(err){
+            if(err instanceof InvalidKeywordException)
+                console.error(err+' : invalid keyword');
+            else
+                console.error('some other error');
         }
     }
 
@@ -163,32 +169,12 @@ export class Runner{
         return result;
     }
 
-    private addErrorListener (parser) {
-        parser.removeErrorListeners();
-        parser.addErrorListener(new ErrorCollectorListener);
-    }
 
     private getFileName (filepath:string) :string {
         let index = filepath.lastIndexOf('/');
         let dotIndex = filepath.lastIndexOf('.');
         
         return filepath.substring(index+1,dotIndex);
-    }
-
-    private static transpile (filepath:string, tree, isRepl:boolean) :Promise<TranspileContent>{
-        let d = new Deferred<any>();
-        let intentListener:RPScriptListener = new RpsTranspileListener(d,filepath);
-
-        ParseTreeWalker.DEFAULT.walk(intentListener, tree);
-        
-        return d.promise;
-     }
-    
-    private static parseTree(input:string) :RPScriptParser {
-        let inputStream = new ANTLRInputStream(input);
-        let tokenStream = new CommonTokenStream( new RPScriptLexer(inputStream) );
-
-        return new RPScriptParser(tokenStream);
     }
 
 }

@@ -1,0 +1,1 @@
+echo "pipeline wait" | wait 2

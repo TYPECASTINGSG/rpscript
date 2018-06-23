@@ -2,9 +2,9 @@
 import {expect} from 'chai';
 import {ReplCommand} from '../src/commands/repl';
 
-describe('Simple test', () => {
+describe.skip('Simple test', () => {
 
-  it.only('should run simple-read1.rps', () => {
+  it('should run simple-read1.rps', () => {
     let filename = './test/fixtures/simple/simple-read1.1.rps';
     new ReplCommand({skipRun:true}).run(filename);
   });
