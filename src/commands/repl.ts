@@ -1,4 +1,4 @@
-import {Runner} from '../core/runner';
+import {Runner} from 'rpscript-parser';
 import { EventEmitter } from 'events';
 
 export class ReplCommand {

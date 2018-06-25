@@ -1,10 +1,10 @@
-// import 'mocha';
+import 'mocha';
 import {expect} from 'chai';
 import {ReplCommand} from '../src/commands/repl';
 
-describe('Basic', () => {
+describe.skip('Basic', () => {
 
-  it.only('should run fail single-simple-fail.rps', async () => {
+  it('should run fail single-simple-fail.rps', async () => {
     let filename = './test/fixtures/basic/single-simple-fail.rps';
     let content = await new ReplCommand({skipRun:true}).run(filename);
     // console.log(content);
