@@ -19,6 +19,9 @@
     "start": "node ./build/rps.js",
     "test": "mocha -r ts-node/register test/**.ts"
   },
+  "bin": {
+    "rps": "./build/rps.js"
+  },
   "dependencies": {
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
