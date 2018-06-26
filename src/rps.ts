@@ -1,16 +1,17 @@
 import program from "commander";
 import R from 'ramda';
 
-import {ReplCommand} from './commands/repl';
+import {ExecCommand} from './commands/exec';
 import {VersionCommand} from './commands/version';
 
 import {NEW_DESCRIPTION, NEW_HELP, RUN_DESCRIPTION, RUN_HELP,
 COMPILE_DESCRIPTION, COMPILE_HELP,REPL_DESCRIPTION,REPL_HELP} from './doc-content';
+import { ModuleMgr } from "rpscript-parser";
 
 program
   .option("-v, --version", "output the version number", () =>{
     let v = new VersionCommand();
-    console.log(v.getVersions())
+    console.log(v.getVersions());
   })
   .option('-o, --skipOutputTS', 'Output Typescript file')
   .option('-l, --skipLinting', 'Lint Output Typescript file')
@@ -26,10 +27,22 @@ program
   '  ******************************************** ')
   .usage('[filename] [options]');
 
+
+  program
+    .command('module <operation> [moduleNames...]')
+    .action(function(operation,moduleNames,cmd){
+      let mgr = new ModuleMgr();
+      // console.log(operation+" , "+moduleNames);
+
+      if(operation === 'list') console.log(mgr.listModuleFull() );
+      else if(operation === 'install')mgr.installModule(moduleNames[0]);
+      else if(operation === 'remove')mgr.removeModule(moduleNames[0]);
+    });
+
   program.parse(process.argv);
 
   let filename = undefined;
-  let command = new ReplCommand(
+  let command = new ExecCommand(
     R.pickBy((v,k)=> v !== undefined,
       {
         outputTS:program.skipOutputTS, linting:program.skipLinting, 
@@ -40,13 +53,17 @@ program
   let hasRpsFile:boolean = R.any(arg => arg.indexOf('.rps')>0, process.argv);
 
   if(process.argv.length < 3){
-    command.repl();
+    program.help();
   }
+
   else if(process.argv[2].indexOf('.rps')>0) { 
     filename = process.argv[2];
     command.run(filename);
   }else if (!hasRpsFile){
-    command.repl();
   }
   
-
+  process.on('unhandledRejection', (reason, promise) => {
+    console.log('RPscript : Unhandled Rejection at:', reason.stack || reason);
+    // Recommended: send the information to sentry.io
+    // or whatever crash reporting service you use
+  })
