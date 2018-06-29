@@ -1,4 +1,4 @@
-import * as shell from 'shelljs';
+// import * as shell from 'shelljs';
 import * as fs from 'fs';
 import {Readable} from 'stream';
 
@@ -21,19 +21,21 @@ export class VersionCommand {
   }
 
   getNodeVersion () :string | Readable{
-    return shell.exec('node --version',{silent:true}).stdout;
+    return "TODO Node Version";
+    // return shell.exec('node --version',{silent:true}).stdout;
   }
   getNpmVersion () :string | Readable{
-    return shell.exec('npm --version',{silent:true}).stdout;
+    return "TODO Npm Version";
+    // return shell.exec('npm --version',{silent:true}).stdout;
   }
 
   getTagUiVersion() : string {
-    let version = "not project folder";
+    let version = "To be Removed";
 
-    if(fs.existsSync('tagui-config.json')){
+    // if(fs.existsSync('tagui-config.json')){
       // let config = ProjectConfig.parse( fs.readFileSync('tagui-config.json', 'utf8') );
       // version = config.version;
-    }
+    // }
 
     return version;
   }

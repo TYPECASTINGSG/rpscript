@@ -29,9 +29,8 @@
     "dateformat": "^3.0.3",
     "inquirer": "^5.2.0",
     "ramda": "^0.25.0",
-    "rpscript-api-notifier": "^0.1.2",
     "rpscript-interface": "^0.2.3",
-    "rpscript-parser": "^0.2.1",
+    "rpscript-parser": "^0.2.5",
     "shelljs": "^0.8.2",
     "winston": "^3.0.0"
   },
