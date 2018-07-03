@@ -1,6 +1,7 @@
 #! /usr/bin/env node
 import program from "commander";
 import R from 'ramda';
+import fs from 'fs';
 
 import {ExecCommand} from './commands/exec';
 import {VersionCommand} from './commands/version';
@@ -48,6 +49,8 @@ program
 
   program.parse(process.argv);
 
+  dirSetup();
+
   let filename = undefined;
   let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
 
@@ -70,3 +73,15 @@ program
     // Recommended: send the information to sentry.io
     // or whatever crash reporting service you use
   })
+
+  function dirSetup () {
+    
+    let config = {
+      outputDir:'.rpscript'
+    }
+            
+    if(!fs.existsSync(config['outputDir'])) {
+        fs.mkdirSync(config['outputDir']);
+        fs.mkdirSync(config['outputDir']+'/logs');
+    }
+  }

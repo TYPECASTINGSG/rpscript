@@ -1,58 +1,56 @@
 import winston from 'winston';
+require('winston-daily-rotate-file');
+
 import fs from 'fs';
 import df from 'dateformat';
 
+
 const { combine, timestamp, label, printf } = winston.format;
 
-const customeLogFormat = printf(info => {
+const runnerLogFormat = printf(info => {
     return `${info.timestamp} [${info.label}] ${info.level}: ${info.message}`;
   });
 
+const moduleLogFormat = printf(info => {
+    return `${info.timestamp} ${info.level}: ${info.message}`;
+  });
+
 export class Logger {
-    private static instance: Logger;
 
-    logger;
-    runnerLogger;
+    constructor(){}
 
-    static getInstance() {
-        if (!Logger.instance) {
-            Logger.instance = new Logger();
-        }
-        return Logger.instance;
-    }
+    static createModuleLogger () : any {
+        let modLogDir = `${process.cwd()}/.rpscript/logs`;
+        if(!fs.existsSync(modLogDir)) fs.mkdirSync(modLogDir);
 
-    constructor(){
-        this.logger = winston.createLogger({
+        return winston.createLogger({
             level: 'debug',
-            // format: winston.format.json(),
-            format: winston.format.simple(),
+            format: combine(timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),moduleLogFormat),
             transports: [
-              new winston.transports.File({ filename: `${process.cwd()}/.rpscript/error.log`, level: 'error' }),
-              new winston.transports.File({ filename: `${process.cwd()}/.rpscript/combined.log` })
+              new winston.transports.File({ filename: `${modLogDir}/module_error.log`, level: 'error' }),
+              new winston.transports.File({ filename: `${modLogDir}/module.log` }),
+              new winston.transports.Console({format: combine(timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),moduleLogFormat)})
             ]
           });
     }
-    createRunnerLogger (fileName:string) :void{
-        let runnerLogDir = `${process.cwd()}/.rpscript/logs/${fileName}`;
-        let execTime:string = df('yy-mm-dd-HH-MM-ss');
+    static createRunnerLogger (fileName:string) :any{
+        let runnerLogDir = `${process.cwd()}/.rpscript/logs/runner/`;
+        let logFile:string = df('yy-mm-dd-HH-MM-ss')+'-run.log';
 
         if(!fs.existsSync(runnerLogDir)) fs.mkdirSync(runnerLogDir);
 
-        this.runnerLogger = winston.createLogger({
-            level:'info',
-            format: combine(
-                label({ label: fileName }),
-                timestamp(),
-                customeLogFormat
-              ),
+        return winston.createLogger({
+            level:'debug',
+            format: combine(label({ label: fileName }),timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),runnerLogFormat),
             transports: [
-              new winston.transports.File({ filename: `${runnerLogDir}/${execTime}.log`})
+              new winston.transports.File({ filename: `${runnerLogDir}/${logFile}`}),
+              new winston.transports.Console({format: combine(timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),moduleLogFormat)})
             ]
         })
     }
     
 
-    log(level, message) {
-        this.logger.log(level, message);
-    }
+    // log(level, message) {
+    //     this.logger.log(level, message);
+    // }
 }

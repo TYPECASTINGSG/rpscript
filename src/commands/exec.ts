@@ -8,12 +8,10 @@ import R from 'ramda';
 export class ExecCommand {
 
   runner:Runner;
-  logger:Logger;
+  logger:any;
 
   constructor(config, event?:(evt:EventEmitter)=>void) {
     this.runner = new Runner(config);
-
-    this.logger = Logger.getInstance();
 
     if(!event)
       this.registerDefaultEvents(this.runner);
@@ -22,6 +20,8 @@ export class ExecCommand {
   }
 
   async run(filename:string) : Promise<any>{
+    this.logger = Logger.createRunnerLogger(filename);
+
     try{
       let result = await this.runner.execute(filename);
 
@@ -33,38 +33,52 @@ export class ExecCommand {
   }
 
   registerDefaultEvents(evtEmt:EventEmitter) : void{
-    evtEmt.on(Runner.ACTION_EVT, (args) => {
-      let arg = args[0];
-      let modName = arg[0], actionName = arg[1], evt = arg[2], params = arg[3];
-      console.log(`=== ${Runner.ACTION_EVT}: ${actionName} ${evt} ===`);
-      console.log(arg);
+    evtEmt.on(Runner.COMPILE_START_EVT, params => {
+      this.logger.info('compilation - start for '+params);
     });
     evtEmt.on(Runner.COMPILED_EVT, params => {
-      console.log(`=== ${Runner.COMPILED_EVT} ===`);
-      console.log(params);
+      this.logger.info('compilation - completed');
+      // console.log(params.transpile);
     });
     evtEmt.on(Runner.LINT_EVT, params => {
-      console.log(`=== ${Runner.LINT_EVT} ===`);
-      console.log(params);
+      this.logger.info('linting - completed');
     });
     evtEmt.on(Runner.TRANSPILE_EVT, params => {
-      console.log(`=== ${Runner.TRANSPILE_EVT} ===`);
       // console.log(params.fullContent);
       fs.writeFileSync('.rpscript/temp.ts',params.fullContent);
+
+      this.logger.debug('transpilation completed. output save to .rpscript/temp.ts');
     });
-    evtEmt.on(Runner.START_EVT, params => {
-      console.log(`=== ${Runner.START_EVT} ===`);
-      console.log(params);
+    evtEmt.on(Runner.MOD_DISABLED_EVT, params => {
+      this.logger.info('module - disabled '+params);
     });
-    evtEmt.on(Runner.END_EVT, params => {
-      console.log(`=== ${Runner.END_EVT} ===`);
-      console.log(params);
+    evtEmt.on(Runner.MOD_LOADED_EVT, params => {
+      this.logger.info('module - loaded '+params);
     });
 
     evtEmt.on(Runner.TRANSPILE_ERR_EVT, params => {
-      console.log(`=== ${Runner.TRANSPILE_ERR_EVT} ===`);
       ErrorMessage.handleKeywordMessage(params);
     });
+
+
+
+    evtEmt.on(Runner.START_EVT, params => {
+      this.logger.info('start of execution');
+    });
+    evtEmt.on(Runner.ACTION_EVT, (args) => {
+      let arg = args[0];
+      let modName = arg[0], actionName = arg[1], evt = arg[2], params = arg[3];
+
+      this.logger.info(`action - ${evt} ${actionName} `);
+    });
+    evtEmt.on(Runner.END_EVT, params => {
+      this.logger.info('end of execution');
+    });
+
+    evtEmt.on(Runner.CTX_PRIOR_SET_EVT, params => {
+      this.logger.info(`Priority set => ${params}`);
+    });
+
   }
 
 
