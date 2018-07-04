@@ -15,6 +15,7 @@ program
     let v = new VersionCommand();
     console.log(v.getVersions());
   })
+  .option('-m, --modules <mods>', 'Only load these modules',(val) => val.split(','))
   // .option('-o, --skipOutputTS', 'Output Typescript file')
   // .option('-l, --skipLinting', 'Lint Output Typescript file')
   // .option('-s, --skipRun', 'Skip running the program')

@@ -93,7 +93,8 @@ export class ExecCommand {
     return R.pickBy((v,k)=> v !== undefined,
     {
       outputTS:program.skipOutputTS, linting:program.skipLinting, 
-      outputDir:program.outputDir,skipRun:program.skipRun
+      outputDir:program.outputDir,skipRun:program.skipRun,
+      modules:program.modules
     })
   }
 
