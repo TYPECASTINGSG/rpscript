@@ -70,6 +70,9 @@ export class ExecCommand {
       let modName = arg[0], actionName = arg[1], evt = arg[2], params = arg[3];
 
       this.logger.info(`action - ${evt} ${actionName} `);
+      if(evt==='error') {
+        this.logger.error(`ERROR : ${params}`);
+      }
     });
     evtEmt.on(Runner.END_EVT, params => {
       this.logger.info('end of execution');
