@@ -31,7 +31,7 @@
     "ramda": "^0.25.0",
     "rpscript-api-notifier": "^0.4.0",
     "rpscript-interface": "^0.5.2",
-    "rpscript-parser": "^0.3.5",
+    "rpscript-parser": "^0.3.11",
     "shelljs": "^0.8.2",
     "winston": "^3.0.0"
   },
