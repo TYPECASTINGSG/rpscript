@@ -14,3 +14,7 @@ build
 example
 
 .rpscript
+
+*.rps
+*.csv
+*.yaml
