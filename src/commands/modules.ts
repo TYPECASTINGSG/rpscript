@@ -54,7 +54,7 @@ export class ModuleCommand {
       let paramsStr = (paramsArr) => R.pluck( 'name', R.values(paramsArr) ).join(',');
 
       var eachAction = (value, key) => {
-        table.push([key, paramsStr(value.params)]);
+        table.push([value.verbName, paramsStr(value.params)]);
       };
       R.forEachObjIndexed(eachAction, actions);
       
