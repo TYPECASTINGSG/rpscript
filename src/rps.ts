@@ -32,6 +32,7 @@ program
 
 
   program
+  .option('-d, --debug', 'debug on console')
   .command('run <filename>', 'execute the script')
   .command('verify <filename>', 'verify if the script is valid')
   .command('install [modules]', 'install one or more modules')

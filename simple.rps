@@ -1,1 +1,1 @@
-notify "hello" "wordl"
+echo "hello world"

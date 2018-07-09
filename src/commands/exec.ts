@@ -10,8 +10,11 @@ export class ExecCommand {
   runner:Runner;
   logger:any;
 
+  debug:boolean;
+
   constructor(config, event?:(evt:EventEmitter)=>void) {
     this.runner = new Runner(config);
+    this.debug = config.debug;
 
     if(!event)
       this.registerDefaultEvents(this.runner);
@@ -20,7 +23,7 @@ export class ExecCommand {
   }
 
   async run(filename:string) : Promise<any>{
-    this.logger = Logger.createRunnerLogger(filename);
+    this.logger = Logger.createRunnerLogger(filename,this.debug);
 
     try{
       let result = await this.runner.execute(filename);
@@ -34,14 +37,14 @@ export class ExecCommand {
 
   registerDefaultEvents(evtEmt:EventEmitter) : void{
     evtEmt.on(Runner.COMPILE_START_EVT, params => {
-      this.logger.info('compilation - start for '+params);
+      this.logger.debug('compilation - start for '+params);
     });
     evtEmt.on(Runner.COMPILED_EVT, params => {
-      this.logger.info('compilation - completed');
+      this.logger.debug('compilation - completed');
       // console.log(params.transpile);
     });
     evtEmt.on(Runner.LINT_EVT, params => {
-      this.logger.info('linting - completed');
+      this.logger.debug('linting - completed');
     });
     evtEmt.on(Runner.TRANSPILE_EVT, params => {
       // console.log(params.fullContent);
@@ -50,10 +53,10 @@ export class ExecCommand {
       this.logger.debug('transpilation completed. output save to .rpscript/temp.ts');
     });
     evtEmt.on(Runner.MOD_DISABLED_EVT, params => {
-      this.logger.info('module - disabled '+params);
+      this.logger.debug('module - disabled '+params);
     });
     evtEmt.on(Runner.MOD_LOADED_EVT, params => {
-      this.logger.info('module - loaded '+params);
+      this.logger.debug('module - loaded '+params);
     });
 
     evtEmt.on(Runner.TRANSPILE_ERR_EVT, params => {
@@ -63,23 +66,23 @@ export class ExecCommand {
 
 
     evtEmt.on(Runner.START_EVT, params => {
-      this.logger.info('start of execution');
+      this.logger.debug('start of execution');
     });
     evtEmt.on(Runner.ACTION_EVT, (args) => {
       let arg = args[0];
       let modName = arg[0], actionName = arg[1], evt = arg[2], params = arg[3];
 
-      this.logger.info(`action - ${evt} ${actionName} `);
+      this.logger.debug(`action - ${evt} ${actionName} `);
       if(evt==='error') {
         this.logger.error(`ERROR : ${params}`);
       }
     });
     evtEmt.on(Runner.END_EVT, params => {
-      this.logger.info('end of execution');
+      this.logger.debug('end of execution');
     });
 
     evtEmt.on(Runner.CTX_PRIOR_SET_EVT, params => {
-      this.logger.info(`Priority set => ${params}`);
+      this.logger.debug(`Priority set => ${params}`);
     });
 
   }
@@ -97,7 +100,7 @@ export class ExecCommand {
     {
       outputTS:program.skipOutputTS, linting:program.skipLinting, 
       outputDir:program.outputDir,skipRun:program.skipRun,
-      modules:program.modules
+      debug:program.debug,modules:program.modules
     })
   }
 

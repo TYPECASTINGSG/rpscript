@@ -33,24 +33,27 @@ export class Logger {
             ]
           });
     }
-    static createRunnerLogger (fileName:string) :any{
+    static createRunnerLogger (fileName:string,debug?:boolean) :any{
         let runnerLogDir = `${process.cwd()}/.rpscript/logs/runner/`;
         let logFile:string = df('yy-mm-dd-HH-MM-ss')+'-run.log';
 
         if(!fs.existsSync(runnerLogDir)) fs.mkdirSync(runnerLogDir);
 
-        return winston.createLogger({
+        let log = winston.createLogger({
             level:'debug',
             format: combine(label({ label: fileName }),timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),runnerLogFormat),
             transports: [
-              new winston.transports.File({ filename: `${runnerLogDir}/${logFile}`}),
-              new winston.transports.Console({format: combine(timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),moduleLogFormat)})
+              new winston.transports.File({ filename: `${runnerLogDir}/${logFile}`})
             ]
         })
-    }
-    
+        
+        if(debug){
+            log.add(
+                new winston.transports.Console(
+                    {format: combine(timestamp({format: 'YYYY-MM-DD HH:mm:ss'}),moduleLogFormat)}));
+        }
 
-    // log(level, message) {
-    //     this.logger.log(level, message);
-    // }
+        return log;
+    }
+ 
 }
