@@ -15,16 +15,24 @@ export class ModuleCommand {
       this.registerDefaultEvents(this.modMgr.event);
   }
 
-  async install(modName:string[]) :Promise<any>{
-      this.logger.info('installing module '+modName[0]+'...');
-
-      this.modMgr.installModule(modName[0]);
+  async install(modName:string[]) :Promise<void>{
+    for(var i=0;i<modName.length;i++){
+      this.logger.info('installing module '+modName[i]+'...');
+      await this.modMgr.installModule(modName[i]);
+    }
   }
   async remove(modName:string[]) :Promise<any>{
-    this.logger.info('removing module '+modName[0]+'...');
-
-    this.modMgr.removeModule(modName[0]);  
+    for(var i=0;i<modName.length;i++){
+      this.logger.info('removing module '+modName[i]+'...');
+      this.modMgr.removeModule(modName[i]);  
+    }
   }
+
+  listInstalledModulesArr() : string[] {
+    let installedModules = R.keys( R.omit(['$DEFAULT'], this.modMgr.listInstalledModules()) );
+    return installedModules;
+  }
+
   listInstalledModules() : string{
     let installedModules = R.values( R.omit(['$DEFAULT'], this.modMgr.listInstalledModules()) );
     
