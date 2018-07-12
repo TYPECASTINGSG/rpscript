@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<head>
+  <meta charset="utf-8">
+  <link rel="stylesheet" type="text/css" href="https://unpkg.com/dc@3/dc.css" />
+  <script src="https://unpkg.com/d3@5/dist/d3.js"></script>
+  <script src="https://unpkg.com/crossfilter2@1.4/crossfilter.js"></script>
+  <script src="https://unpkg.com/dc@3/dc.js"></script>
+  <script src="https://rawgit.com/crossfilter/reductio/master/reductio.js"></script>
+  <script src="https://npmcdn.com/universe@latest/universe.js"></script>
+  <style>
+  </style>
+</head>
+
+<body>
+    <div class="data-count">
+        count
+            <div class="total-count"></div>
+            <div class="filter-count"></div>
+    </div>
+    <div id="chart-container1">
+    </div>
+    <div id="barchart"></div>
+    <div id="piechart"></div>
+    <div id="region"></div>
+    <div id="rep"></div>
+    <div id="rowchart"></div>
+    <div id="tablechart"></div>
+
+    <script>
+    var barchart = dc.barChart("#barchart");
+    var piechart = dc.pieChart("#piechart");
+    var tableChart = dc.dataTable("#tablechart");
+    var piechart2 = dc.pieChart("#region");
+    var piechart3 = dc.pieChart("#rep");
+    var rowchart = dc.rowChart("#rowchart");
+    // dc.numberDisplay('#chart-container1').html({one:'%number record',some:'%number records',none:'no records'});
+
+    d3.csv("salesorders.csv").then(function(orders) {
+
+      orders.forEach(function(x) {
+        x.Total = parseFloat(x.Total.replace(/,/g, ''));
+        x.Units = +x.Units;
+        x['Unit Cost'] = +x['Unit Cost'];
+      });
+
+      var ndx = crossfilter(orders);
+      
+      var itemDimension = ndx.dimension(function(d) {return d.Item;});
+      let itemGroup = itemDimension.group().reduceCount();
+
+      var regionDimension = ndx.dimension(function(d) {return d.Region;});
+      let regionGroup = regionDimension.group().reduceCount();
+
+      var repDimension = ndx.dimension(function(d) {return d.Rep;});
+      let repGroup = repDimension.group().reduceCount();
+
+      var all = ndx.groupAll();
+
+      var f = itemGroup.top(5);
+
+    // dc.dataCount('.data-count').dimension(ndx).group(all);
+
+
+      barchart
+        .width(768).height(480).x(d3.scaleBand()).xUnits(dc.units.ordinal)
+        .brushOn(false).xAxisLabel("Item").yAxisLabel("Count")
+        .dimension(itemDimension).group(itemGroup)
+        .on('renderlet', function(chart) {
+            chart.selectAll('rect').on("click", function(d) {
+                console.log("click!", d);
+            });
+        });
+
+        piechart
+            .width(800).height(300)
+            .dimension(itemDimension).group(itemGroup)
+            .on('renderlet', function(chart) {
+                chart.selectAll('rect').on('click', function(d) {
+                    console.log('click!', d);
+                });
+            });
+
+        
+        piechart2
+            .width(800).height(300)
+            .dimension(regionDimension).group(regionGroup)
+            .on('renderlet', function(chart) {
+                chart.selectAll('rect').on('click', function(d) {
+                    console.log('click!', d);
+                });
+            });
+
+        piechart3
+            .width(800).height(300)
+            .dimension(repDimension).group(repGroup)
+            .on('renderlet', function(chart) {
+                chart.selectAll('rect').on('click', function(d) {
+                    console.log('click!', d);
+                });
+            });
+
+        rowchart
+        .width(768).height(480)
+        .x(d3.scaleLinear().domain([6,20]))
+        .elasticX(true)
+        .dimension(itemDimension)
+        .group(itemGroup)
+
+        tableChart
+               .dimension(itemDimension)
+               .group(function (data) {
+                  return data.OrderDate;
+               })
+               .size(Infinity)
+               .columns(['OrderDate','Region','Rep','Item', 'Units','Unit Cost','Total'])
+               .sortBy(function (d) {
+                  return d.value;
+               })
+               .order(d3.descending);
+
+        dc.renderAll();
+    });
+  
+    </script>
+</body>

@@ -5,9 +5,23 @@ export class ErrorMessage {
         let errorType = exception.constructor.name;
         if(errorType === 'InvalidKeywordException')
             this.handleInvalidKeywordException(exception);
+        else if(errorType === 'TypeError')
+            this.handleTypeError(exception);
+        else if(errorType === 'InputMismatchException')
+            this.handleInputMismatchException(exception)
         else
             console.error('TODO FOR : '+errorType);
 
+    }
+
+    private static handleInputMismatchException(exception:any){
+        console.error('*** handleInputMismatchException ***');
+        console.error(exception);
+    }
+
+    private static handleTypeError(exception:any){
+        console.error('*** Type Error ***');
+        // console.error(exception);
     }
 
     private static handleInvalidKeywordException (exception:any) {
