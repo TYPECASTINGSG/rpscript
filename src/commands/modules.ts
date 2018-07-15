@@ -1,6 +1,6 @@
 import {ModuleMgr} from 'rpscript-parser';
 import Table from 'cli-table';
-import R from 'ramda';
+import * as R from '../../lib/ramda.min';
 import {EventEmitter} from 'events';
 import {Logger} from '../core/logger';
 

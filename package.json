@@ -26,7 +26,6 @@
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
     "dateformat": "^3.0.3",
-    "ramda": "^0.25.0",
     "rpscript-parser": "^0.5.6",
     "shelljs": "^0.8.2",
     "winston": "^3.0.0"
