@@ -3,7 +3,7 @@ import { EventEmitter } from 'events';
 import {Logger} from '../core/logger';
 import {ErrorMessage} from '../format/error_msg';
 import fs from 'fs';
-import R from 'ramda';
+import * as R from '../../lib/ramda.min';
 
 export class ExecCommand {
 

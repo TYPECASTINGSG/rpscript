@@ -1,12 +1,9 @@
 #! /usr/bin/env node
 import program from "commander";
-import R from 'ramda';
+import * as R from '../lib/ramda.min';
 import fs from 'fs';
 
-import {ExecCommand} from './commands/exec';
 import {VersionCommand} from './commands/version';
-import {ModuleCommand} from './commands/modules';
-
 import {NEW_DESCRIPTION, NEW_HELP, RUN_DESCRIPTION, RUN_HELP,
 COMPILE_DESCRIPTION, COMPILE_HELP,REPL_DESCRIPTION,REPL_HELP} from './doc-content';
 
@@ -54,7 +51,7 @@ program
   dirSetup();
 
   let filename = undefined;
-  let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
+  
 
   let hasRpsFile:boolean = R.any(arg => arg.indexOf('.rps')>0, process.argv);
 
@@ -63,8 +60,13 @@ program
   }
 
   else if(process.argv[2].indexOf('.rps')>0) { 
-    filename = process.argv[2];
-    command.run(filename);
+    import(`${process.cwd()}/build/commands/exec`).then(mod => {
+      let ExecCommand = mod['ExecCommand'];
+      let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
+  
+      filename = process.argv[2];
+      command.run(filename);
+    });
 
   }else if (!hasRpsFile){
     // console.log('an extension .rps is required for filename');

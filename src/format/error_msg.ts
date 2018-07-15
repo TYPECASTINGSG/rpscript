@@ -1,4 +1,3 @@
-import clc from 'cli-color';
 
 export class ErrorMessage {
     static handleKeywordMessage (exception:any) : void {
@@ -21,7 +20,7 @@ export class ErrorMessage {
 
     private static handleTypeError(exception:any){
         console.error('*** Type Error ***');
-        // console.error(exception);
+        console.error(exception);
     }
 
     private static handleInvalidKeywordException (exception:any) {
@@ -32,8 +31,13 @@ export class ErrorMessage {
         let rawLine = ctx.start.inputStream.data;
 
         console.log('');
-        console.log(`Oops... Don't recognize keyword ${clc.red(offendingWord)}. Do you mean ${clc.blue('_')} ?`);
+        console.log(`Oops... Don't recognize keyword ${offendingWord}. Do you mean _ ?`);
         console.log('');
-        console.log(`line ${line} : `+clc.white.bgBlack(rawLine));
+        console.log(`line ${line} : `+rawLine);
+
+        // console.log('');
+        // console.log(`Oops... Don't recognize keyword ${clc.red(offendingWord)}. Do you mean ${clc.blue('_')} ?`);
+        // console.log('');
+        // console.log(`line ${line} : `+clc.white.bgBlack(rawLine));
     }
 }

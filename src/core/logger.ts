@@ -1,6 +1,4 @@
 import winston from 'winston';
-require('winston-daily-rotate-file');
-
 import fs from 'fs';
 import df from 'dateformat';
 
