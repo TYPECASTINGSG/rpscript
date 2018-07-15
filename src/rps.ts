@@ -60,7 +60,7 @@ program
   }
 
   else if(process.argv[2].indexOf('.rps')>0) { 
-    import(`${process.cwd()}/build/commands/exec`).then(mod => {
+    import(`${__dirname}/commands/exec`).then(mod => {
       let ExecCommand = mod['ExecCommand'];
       let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
   

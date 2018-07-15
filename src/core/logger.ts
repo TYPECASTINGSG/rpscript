@@ -1,7 +1,7 @@
 import winston from 'winston';
 import fs from 'fs';
 import df from 'dateformat';
-
+const HOMEDIR = require('os').homedir();
 
 const { combine, timestamp, label, printf } = winston.format;
 
@@ -32,7 +32,11 @@ export class Logger {
           });
     }
     static createRunnerLogger (fileName:string,debug?:boolean) :any{
+        let modLogDir = `${process.cwd()}/.rpscript/logs`;
+        if(!fs.existsSync(modLogDir)) fs.mkdirSync(modLogDir);
         let runnerLogDir = `${process.cwd()}/.rpscript/logs/runner/`;
+        if(!fs.existsSync(runnerLogDir)) fs.mkdirSync(runnerLogDir);
+
         let logFile:string = df('yy-mm-dd-HH-MM-ss')+'-run.log';
 
         if(!fs.existsSync(runnerLogDir)) fs.mkdirSync(runnerLogDir);
