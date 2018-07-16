@@ -15,10 +15,10 @@ export class ModuleCommand {
       this.registerDefaultEvents(this.modMgr.event);
   }
 
-  async install(modName:string[]) :Promise<void>{
+  async install(allowExternalModule:boolean,modName:string[]) :Promise<void>{
     for(var i=0;i<modName.length;i++){
       this.logger.info('installing module '+modName[i]+'...');
-      await this.modMgr.installModule(modName[i]);
+      await this.modMgr.installModule(modName[i],allowExternalModule);
     }
   }
   async remove(modName:string[]) :Promise<any>{
