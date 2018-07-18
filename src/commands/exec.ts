@@ -35,6 +35,18 @@ export class ExecCommand {
     }
   }
 
+  async runStatement(content:string) : Promise<any>{
+    this.logger = Logger.createRunnerLogger('none',this.debug);
+    try{
+      let result = await this.runner.execute(null,content);
+
+      return result;
+    
+    }catch(er){
+      console.error(er);
+    }
+  }
+
   registerDefaultEvents(evtEmt:EventEmitter) : void{
     evtEmt.on(Runner.COMPILE_START_EVT, params => {
       this.logger.debug('compilation - start for '+params);

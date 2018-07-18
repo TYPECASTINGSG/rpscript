@@ -30,6 +30,7 @@ program
 
   program
   .option('-d, --debug', 'debug on console')
+  .option('-e, --exec', 'run action from CLI')
   .command('run <filename>', 'execute the script')
   .command('verify <filename>', 'verify if the script is valid')
   .command('install [modules]', 'install one or more modules')
@@ -55,6 +56,7 @@ program
 
   let hasRpsFile:boolean = R.any(arg => arg.indexOf('.rps')>0, process.argv);
 
+  
   if(process.argv.length < 3){
     program.help();
   }
@@ -68,7 +70,26 @@ program
       command.run(filename);
     });
 
-  }else if (!hasRpsFile){
+  }else if (!hasRpsFile && program.exec){
+    import(`${__dirname}/commands/exec`).then(mod => {
+      let ExecCommand = mod['ExecCommand'];
+      let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
+  
+      let commands:any = process.argv;
+      commands = commands.join(' ');
+
+      let exeCom = "";
+
+      let indexOfFlag = commands.lastIndexOf('--exec');
+      if(indexOfFlag > 0) exeCom = commands.substring(indexOfFlag+7);
+      else {
+        indexOfFlag = commands.lastIndexOf('-e');
+        if(indexOfFlag > 0) exeCom = commands.substring(indexOfFlag+3);
+      }
+
+
+      command.runStatement(exeCom);
+    });
     // console.log('an extension .rps is required for filename');
   }
   
