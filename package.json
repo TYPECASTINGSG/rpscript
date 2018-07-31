@@ -26,8 +26,7 @@
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
     "dateformat": "^3.0.3",
-    "rpscript-parser": "^0.5.11",
-    "shelljs": "^0.8.2",
+    "rpscript-parser": "^0.5.29",
     "winston": "^3.0.0"
   },
   "devDependencies": {

@@ -4,15 +4,14 @@ import * as R from '../lib/ramda.min';
 import fs from 'fs';
 
 import {VersionCommand} from './commands/version';
-import {NEW_DESCRIPTION, NEW_HELP, RUN_DESCRIPTION, RUN_HELP,
-COMPILE_DESCRIPTION, COMPILE_HELP,REPL_DESCRIPTION,REPL_HELP} from './doc-content';
+// import {NEW_DESCRIPTION, NEW_HELP, RUN_DESCRIPTION, RUN_HELP,
+// COMPILE_DESCRIPTION, COMPILE_HELP,REPL_DESCRIPTION,REPL_HELP} from './doc-content';
 
 program
-  .option("-v, --version", "output the version number", () =>{
+  .option("-v, --version", "Display version", () =>{
     let v = new VersionCommand();
     console.log(v.getVersions());
   })
-  .option('-m, --modules <mods>', 'Only load these modules',(val) => val.split(','))
   // .option('-o, --skipOutputTS', 'Output Typescript file')
   // .option('-l, --skipLinting', 'Lint Output Typescript file')
   // .option('-s, --skipRun', 'Skip running the program')
@@ -29,18 +28,13 @@ program
 
 
   program
-  .option('-d, --debug', 'debug on console')
-  .option('-e, --exec', 'run action from CLI')
-  .command('run <filename>', 'execute the script')
-  .command('verify <filename>', 'verify if the script is valid')
-  .command('install [modules]', 'install one or more modules')
-  .command('remove [modules]', 'remove one or more modules')
-  .command('modules', 'list modules information')
-  .command('module <module>', 'show module information')
-  .command('actions', 'list actions information')
-  .command('action <action>', 'show action information');
-  // .command('enable', 'enable a module or an action')
-  // .command('disable', 'disable a module or an action');
+  .option('-d, --debug', 'Show debugging information on console')
+  .command('verify <filename>', 'Verify if the rps script is valid')
+  .command('install [modules]', 'Install one or more modules')
+  .command('remove [modules]', 'Remove one or more modules')
+  .command('modules', 'List modules information')
+  .command('module <module>', 'Show module information')
+  .command('actions', 'List installed actions');
   
   //modules <module>  --installed --available
   //actions  <action> --defaults  
@@ -67,7 +61,10 @@ program
       let command = new ExecCommand( ExecCommand.parseProgramOpts(program) );
   
       filename = process.argv[2];
-      command.run(filename);
+      let args  = process.argv.slice(3);
+      args = args.filter(a => !a.startsWith('-'));
+
+      command.run(filename,args);
     });
 
   }else if (!hasRpsFile && program.exec){

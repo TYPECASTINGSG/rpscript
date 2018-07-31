@@ -4,7 +4,7 @@ import {ModuleCommand} from './commands/modules';
 
 program
   .description('install module')
-  .option('-a, --allowExternalModule', 'Allow modules other than publish by typecasting')
+  .option('-a, --allowExternalModule', 'Allow modules outside of typecasting')
   .parse(process.argv);
 
 

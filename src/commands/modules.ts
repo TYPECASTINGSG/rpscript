@@ -36,10 +36,12 @@ export class ModuleCommand {
   listInstalledModules() : string{
     let installedModules = R.values( R.omit(['$DEFAULT'], this.modMgr.listInstalledModules()) );
     
-    let table = new Table({head: ['name', 'version','enable','description']});
+    let table = new Table({head: ['name', 'version']});
+    // let table = new Table({head: ['name', 'version','enable','description']});
 
-    installedModules.forEach(mod => table.push([
-      mod.name, mod.npmVersion, mod.enabled, !mod.description ? '' : mod.description] ));
+    installedModules.forEach(mod => table.push([mod.name, mod.npmVersion] ));
+    // installedModules.forEach(mod => table.push([
+    //   mod.name, mod.npmVersion, mod.enabled, !mod.description ? '' : mod.description] ));
 
     return table.toString();
   }
@@ -57,16 +59,23 @@ export class ModuleCommand {
     if(!module)
       return 'module '+mod+' is not installed';
     else {
-      let table = new Table({head:['action','params']});
-      let actions = module.actions;
-      let paramsStr = (paramsArr) => R.pluck( 'name', R.values(paramsArr) ).join(',');
+      // let table = new Table({head:['action','params']});
+      // let actions = module.actions;
+      // let paramsStr = (paramsArr) => R.pluck( 'name', R.values(paramsArr) ).join(',');
 
-      var eachAction = (value, key) => {
-        table.push([value.verbName, paramsStr(value.params)]);
-      };
-      R.forEachObjIndexed(eachAction, actions);
-      
-      return table.toString();
+      // var eachAction = (value, key) => {
+      //   table.push([value.verbName, paramsStr(value.params)]);
+      // };
+      // R.forEachObjIndexed(eachAction, actions);
+      // let actionsTbl = table.toString();
+
+      let v = R.pluck('verbName', R.values( R.prop('actions')(module)) );
+
+      let modName = 'name : '+module.name;
+      let modVersion = 'version : '+module.npmVersion;
+      let allActions = 'actions : '+v.join(', ');
+
+      return modName + '\n' + modVersion + '\n' + allActions;
     }
 
 

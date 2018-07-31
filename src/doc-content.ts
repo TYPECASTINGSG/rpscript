@@ -1,10 +1,5 @@
 let NEW_DESCRIPTION = `create a new project.`;
 let NEW_HELP = `
-Examples:
-  * tui new automate-signin
-
-  This command will create a new project directory to execute Tagui automation.
-  Together with default configuration.
 `;
 
 let RUN_DESCRIPTION = `Run an RPS file`;

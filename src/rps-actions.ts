@@ -3,8 +3,7 @@ import program from "commander";
 import {ModuleCommand} from './commands/modules';
 
 program
-  .option('-d, --default', 'Show default action list')
-  .description('display module information detail')
+  .description('List installed actions')
   .parse(process.argv);
 
 let opts = program.opts();

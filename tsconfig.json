@@ -12,6 +12,7 @@
     "outDir": "build",
     "types":["node"],
     "target": "es2015",
+    "skipLibCheck": true,
     "module": "commonjs",
     "declaration": true,
     "strict": false,

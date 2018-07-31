@@ -22,11 +22,11 @@ export class ExecCommand {
       event(this.runner);
   }
 
-  async run(filename:string) : Promise<any>{
+  async run(filename:string,args:any[]=[]) : Promise<any>{
     this.logger = Logger.createRunnerLogger(filename,this.debug);
 
     try{
-      let result = await this.runner.execute(filename);
+      let result = await this.runner.execute(filename,args);
 
       return result;
     
@@ -38,7 +38,7 @@ export class ExecCommand {
   async runStatement(content:string) : Promise<any>{
     this.logger = Logger.createRunnerLogger('none',this.debug);
     try{
-      let result = await this.runner.execute(null,content);
+      let result = await this.runner.execute(null,[],content);
 
       return result;
     
