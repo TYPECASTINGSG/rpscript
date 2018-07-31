@@ -28,17 +28,33 @@ export class ErrorMessage {
         let offendingToken = ctx.WORD();
         let offendingWord = offendingToken.text;
         let line = offendingToken.payload._line;
-        let rawLine = ctx.start.inputStream.data;
         let recommended = exception.recommended;
+
+        let input = ctx.start.inputStream.toString();
+        let lines = input.split('\n');
 
         console.log('');
         console.log(`Oops... Don't recognize keyword ${offendingWord}. Do you mean ${recommended} ?`);
         console.log('');
-        console.log(`line ${line} : `+rawLine);
+        console.log(`line ${line}:`);
+        console.log(lines[line-1]);
 
         // console.log('');
         // console.log(`Oops... Don't recognize keyword ${clc.red(offendingWord)}. Do you mean ${clc.blue('_')} ?`);
         // console.log('');
         // console.log(`line ${line} : `+clc.white.bgBlack(rawLine));
     }
+
+    private static underlineError (lines, offendingWord,line, pos) {
+        
+        // let errorLine = lines[line-1];
+  
+        // let start = offendingToken.startIndex;
+        // let stop = offendingToken.stopIndex;
+  
+        // console.log(errorLine);
+        // for(var i=0;i<pos;i++)process.stdout.write(" ");
+        // if(start>=0 && stop>=0) for(var i:number=start;i<stop+1;i++) process.stdout.write("^");
+        // console.log('');
+      }
 }
