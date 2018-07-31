@@ -29,9 +29,10 @@ export class ErrorMessage {
         let offendingWord = offendingToken.text;
         let line = offendingToken.payload._line;
         let rawLine = ctx.start.inputStream.data;
+        let recommended = exception.recommended;
 
         console.log('');
-        console.log(`Oops... Don't recognize keyword ${offendingWord}. Do you mean _ ?`);
+        console.log(`Oops... Don't recognize keyword ${offendingWord}. Do you mean ${recommended} ?`);
         console.log('');
         console.log(`line ${line} : `+rawLine);
 
