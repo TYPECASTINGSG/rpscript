@@ -4,8 +4,8 @@ import * as R from '../lib/ramda.min';
 import fs from 'fs';
 
 import {VersionCommand} from './commands/version';
-// import {NEW_DESCRIPTION, NEW_HELP, RUN_DESCRIPTION, RUN_HELP,
-// COMPILE_DESCRIPTION, COMPILE_HELP,REPL_DESCRIPTION,REPL_HELP} from './doc-content';
+
+const HOMEDIR = require('os').homedir();
 
 program
   .option("-v, --version", "Display version", () =>{
@@ -26,8 +26,7 @@ program
   '  ******************************************** ')
   .usage('[filename] [options]');
 
-
-  program
+program
   .option('-d, --debug', 'Show debugging information on console')
   .command('verify <filename>', 'Verify if the rps script is valid')
   .command('install [modules]', 'Install one or more modules')
@@ -40,10 +39,10 @@ program
   //actions  <action> --defaults  
   //enable  <name> --module --action
   //disable <name> --module --action
+  
+  dirSetup();
 
   program.parse(process.argv);
-
-  dirSetup();
 
   let filename = undefined;
   
@@ -97,7 +96,7 @@ program
   })
 
   function dirSetup () {
-    
+
     let config = {
       outputDir:'.rpscript'
     }
@@ -106,4 +105,10 @@ program
         fs.mkdirSync(config['outputDir']);
         fs.mkdirSync(config['outputDir']+'/logs');
     }
+
+    if(!fs.existsSync(`${HOMEDIR}/.rpscript/modules/node_modules`)){
+      console.log('ALERT: No module detected.');
+      console.log("Please install the basic module with the command 'rps install basic ramda'");
+    }
+    
   }
