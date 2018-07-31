@@ -17,7 +17,9 @@
     "watch": "tsc -w",
     "build": "tsc",
     "start": "node ./build/rps.js",
-    "test": "mocha -r ts-node/register test/**.ts"
+    "test": "mocha -r ts-node/register test/**.ts",
+    "postinstall": "scripts/install.js",
+    "uninstall": "scripts/uninstall.js"
   },
   "bin": {
     "rps": "./build/rps.js"
