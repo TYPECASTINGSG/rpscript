@@ -4,6 +4,8 @@ import * as R from '../../lib/ramda.min';
 import {EventEmitter} from 'events';
 import {Logger} from '../core/logger';
 
+var pjson = require('../../package.json');
+
 export class ModuleCommand {
 
   modMgr:ModuleMgr;
@@ -16,9 +18,15 @@ export class ModuleCommand {
   }
 
   async install(allowExternalModule:boolean,modName:string[]) :Promise<void>{
+    
     for(var i=0;i<modName.length;i++){
-      this.logger.info('installing module '+modName[i]+'...');
-      await this.modMgr.installModule(modName[i],allowExternalModule);
+      if(!allowExternalModule && !R.contains(modName[i],pjson.officialModules))
+        this.logger.error(modName[i]+' is not part of the official package. Fail to install.');  
+      else {
+        this.logger.info('installing module '+modName[i]+'...');
+        await this.modMgr.installModule(modName[i],allowExternalModule);
+      }
+      
     }
   }
   async remove(modName:string[]) :Promise<any>{
