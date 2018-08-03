@@ -20,8 +20,8 @@ export class ModuleCommand {
   async install(allowExternalModule:boolean,modName:string[]) :Promise<void>{
     
     for(var i=0;i<modName.length;i++){
-      if(!allowExternalModule && !R.contains(modName[i],pjson.officialModules))
-        this.logger.error(modName[i]+' is not part of the official package. Fail to install.');  
+      if(!allowExternalModule && !R.contains(this.extractModuleName(modName[i]),pjson.officialModules))
+        this.logger.error(modName[i]+' is not available.');
       else {
         this.logger.info('installing module '+modName[i]+'...');
         await this.modMgr.installModule(modName[i],allowExternalModule);
@@ -29,6 +29,13 @@ export class ModuleCommand {
       
     }
   }
+
+  private extractModuleName (modName:string) : String{
+    let index = modName.indexOf('@');
+    if(index > 0) return modName.substring(0,index);
+    else return modName;
+  }
+
   async remove(modName:string[]) :Promise<any>{
     for(var i=0;i<modName.length;i++){
       this.logger.info('removing module '+modName[i]+'...');
