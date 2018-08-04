@@ -41,7 +41,7 @@
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
     "dateformat": "^3.0.3",
-    "rpscript-parser": "^0.5.32",
+    "rpscript-parser": "^0.5.33",
     "winston": "^3.0.0"
   },
   "devDependencies": {
