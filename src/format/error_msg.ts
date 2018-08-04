@@ -7,10 +7,16 @@ export class ErrorMessage {
         else if(errorType === 'TypeError')
             this.handleTypeError(exception);
         else if(errorType === 'InputMismatchException')
-            this.handleInputMismatchException(exception)
-        else
-            console.error('TODO FOR : '+errorType);
+            this.handleInputMismatchException(exception);
+        else if(errorType === 'ReferenceError'){
+            this.handleReferenceError(exception);
+        }
 
+    }
+
+    private static handleReferenceError(exception:any){
+        console.error('*** handleReferenceError ***');
+        console.error(exception);
     }
 
     private static handleInputMismatchException(exception:any){
