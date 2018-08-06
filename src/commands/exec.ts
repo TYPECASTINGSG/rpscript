@@ -47,6 +47,20 @@ export class ExecCommand {
     }
   }
 
+  private printParams (params:any[]) : string{
+
+    function genString (p) {
+      if(typeof p === 'function') return '[function]';
+      else if(typeof p === 'object') return JSON.stringify(p);
+      else return p;
+    }
+
+    if(Array.isArray(params))
+      return R.map(genString,params).join(' , ');
+    else
+      return genString(params);
+  }
+
   registerDefaultEvents(evtEmt:EventEmitter) : void{
     evtEmt.on(Runner.COMPILE_START_EVT, params => {
       this.logger.debug('compilation - start for '+params);
@@ -84,7 +98,7 @@ export class ExecCommand {
       let arg = args[0];
       let modName = arg[0], actionName = arg[1], evt = arg[2], params = arg[3];
 
-      this.logger.debug(`action - ${evt} ${actionName} `);
+      this.logger.debug(`action - ${evt} execute : ${this.printParams(params)} `);
       if(evt==='error') {
         this.logger.error(`ERROR : ${params}`);
       }
