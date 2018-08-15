@@ -1,6 +1,0 @@
-
-open "https://www.google.com.sg"
-once $RESULT 'load'
-type "#lst-ib" "Lebron James"
-wait 3
-click '.jsb > center:nth-child(1) > input:nth-child(1)'

@@ -11,8 +11,6 @@ src/commands/*.js
 
 build
 
-example
-
 .rpscript
 
 *.rps

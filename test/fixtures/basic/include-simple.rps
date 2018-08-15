@@ -1,2 +1,0 @@
-@include "./src/file.rps"
-echo "include source file"

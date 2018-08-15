@@ -1,5 +1,0 @@
-read "unknown.txt"
-;echo $RESULT
-write "something.txt" "content here"
-exists "something.txt"
-echo $RESULT

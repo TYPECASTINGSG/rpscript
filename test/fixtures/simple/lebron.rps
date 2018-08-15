@@ -1,9 +1,0 @@
-mocha "simple.rps"
-launch
-navigate "http://www.google.com.sg"
-wait 3
-test "is it true"
-type "Lebron James"
-create "hello.txt"
-open "package.json"
-report

@@ -1,5 +1,0 @@
-@hello $text1 $text2 {
-    echo $text1
-    echo $test2
-}
-@hello "hello" "world"

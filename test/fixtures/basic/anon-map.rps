@@ -1,3 +1,0 @@
-map [1,2,3] @ $number {
-    echo $number
-}

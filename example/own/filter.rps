@@ -1,9 +1,0 @@
-    $CONTEXT = new RpsContext();
-    inputs = [1,2,3,4];
-    double = x => x*2;
-    isEven = n => n % 2 === 0;
-
-    let filterFn = await functional.Filter($CONTEXT,{},isEven);
-    let result = filterFn(inputs);
-
-    c.expect(result).to.have.same.members([2,4]);
