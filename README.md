@@ -81,28 +81,28 @@ rps helloworld.rps
 
 ## Getting Started <img src="https://s3.amazonaws.com/sample.rpscript.com/images/handy_robot50.png" width="25px">
 
-Getting started guide is available at [Getting Started](http://docs.rpscript.com/tutorial-gettingstarted.html).
+Getting started guide is available at [Getting Started](http://www.rpscript.com/tutorial-gettingstarted.html).
 
 ## Usage <img src="https://s3.amazonaws.com/sample.rpscript.com/images/handy_robot50.png" width="25px">
 
-Usage guide is available at [Usage](http://docs.rpscript.com/tutorial-usage.html)
+Usage guide is available at [Usage](http://www.rpscript.com/tutorial-usage.html)
 
 
 ## Modules <img src="https://s3.amazonaws.com/sample.rpscript.com/images/bossy_robot50.png" width="18px">
 
 Name | Status | Description | Doc
 --- | --- | --- | ---
-[Basic](https://github.com/TYPECASTINGSG/rpscript-api-basic) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-basic.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-basic) | Basic operation and data manipulation. | [Here](http://docs.rpscript.com/Basic.html)
-[Beeper](https://github.com/TYPECASTINGSG/rpscript-api-beeper) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-beeper.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-beeper) | Make terminal beeps. | [Here](http://docs.rpscript.com/Beeper.html)
-[CSV](https://github.com/TYPECASTINGSG/rpscript-api-csv) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-csv.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-csv) | CSV utility. | [Here](http://docs.rpscript.com/CSV.html)
-[Date](https://github.com/TYPECASTINGSG/rpscript-api-date) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-date.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-date) | Date utility. | [Here](http://docs.rpscript.com/Date.html)
-[Downloading](https://github.com/TYPECASTINGSG/rpscript-api-download) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-downloading.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-downloading) | File Download. | [Here](http://docs.rpscript.com/Download.html)
-[Figlet](https://github.com/TYPECASTINGSG/rpscript-api-figlet) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-figlet.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-figlet) | Ascii Art. | [Here](http://docs.rpscript.com/Figlet.html)
-[File](https://github.com/TYPECASTINGSG/rpscript-api-file) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-file.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-file) | File system. | [Here](http://docs.rpscript.com/File.html)
-[Hogan](https://github.com/TYPECASTINGSG/rpscript-api-hogan) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-hogan.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-hogan) | Moustache Templating. | [Here](http://docs.rpscript.com/Hogan.html)
-[Notifier](https://github.com/TYPECASTINGSG/rpscript-api-notifier) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier) | Desktop Notification. | [Here](http://docs.rpscript.com/Notifier.html)
-[Open](https://github.com/TYPECASTINGSG/rpscript-api-open) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open) | Open a file or url in the user's preferred application. | [Here](http://docs.rpscript.com/Open.html)
-[Zip](https://github.com/TYPECASTINGSG/rpscript-api-adm-zip) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip) | File compression and extraction. | [Here](http://docs.rpscript.com/Zip.html)
+[Basic](https://github.com/TYPECASTINGSG/rpscript-api-basic) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-basic.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-basic) | Basic operation and data manipulation. | [Here](http://www.rpscript.com/Basic.html)
+[Beeper](https://github.com/TYPECASTINGSG/rpscript-api-beeper) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-beeper.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-beeper) | Make terminal beeps. | [Here](http://www.rpscript.com/Beeper.html)
+[CSV](https://github.com/TYPECASTINGSG/rpscript-api-csv) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-csv.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-csv) | CSV utility. | [Here](http://www.rpscript.com/CSV.html)
+[Date](https://github.com/TYPECASTINGSG/rpscript-api-date) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-date.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-date) | Date utility. | [Here](http://www.rpscript.com/Date.html)
+[Downloading](https://github.com/TYPECASTINGSG/rpscript-api-download) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-downloading.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-downloading) | File Download. | [Here](http://www.rpscript.com/Download.html)
+[Figlet](https://github.com/TYPECASTINGSG/rpscript-api-figlet) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-figlet.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-figlet) | Ascii Art. | [Here](http://www.rpscript.com/Figlet.html)
+[File](https://github.com/TYPECASTINGSG/rpscript-api-file) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-file.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-file) | File system. | [Here](http://www.rpscript.com/File.html)
+[Hogan](https://github.com/TYPECASTINGSG/rpscript-api-hogan) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-hogan.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-hogan) | Moustache Templating. | [Here](http://www.rpscript.com/Hogan.html)
+[Notifier](https://github.com/TYPECASTINGSG/rpscript-api-notifier) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier) | Desktop Notification. | [Here](http://www.rpscript.com/Notifier.html)
+[Open](https://github.com/TYPECASTINGSG/rpscript-api-open) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open) | Open a file or url in the user's preferred application. | [Here](http://www.rpscript.com/Open.html)
+[Zip](https://github.com/TYPECASTINGSG/rpscript-api-adm-zip) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip) | File compression and extraction. | [Here](http://www.rpscript.com/Zip.html)
 _ | _| More coming soon | _
 
 ## FAQ <img src="https://s3.amazonaws.com/sample.rpscript.com/images/smart_robot50.png" width="18px">
