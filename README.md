@@ -74,6 +74,11 @@ Create a file "helloworld.rps" and add this line:
 log repeat "hello world " 3
 ```
 
+Go to the terminal, and run the command:
+```
+rps helloworld.rps
+```
+
 ## Getting Started <img src="https://s3.amazonaws.com/sample.rpscript.com/images/handy_robot50.png" width="25px">
 
 Getting started guide is available at [Getting Started](http://docs.rpscript.com/tutorial-gettingstarted.html).
@@ -98,6 +103,7 @@ Name | Status | Description | Doc
 [Notifier](https://github.com/TYPECASTINGSG/rpscript-api-notifier) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier) | Desktop Notification. | [Here](http://docs.rpscript.com/Notifier.html)
 [Open](https://github.com/TYPECASTINGSG/rpscript-api-open) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open) | Open a file or url in the user's preferred application. | [Here](http://docs.rpscript.com/Open.html)
 [Zip](https://github.com/TYPECASTINGSG/rpscript-api-adm-zip) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip) | File compression and extraction. | [Here](http://docs.rpscript.com/Zip.html)
+_ | _| More coming soon | _
 
 ## FAQ <img src="https://s3.amazonaws.com/sample.rpscript.com/images/smart_robot50.png" width="18px">
 
@@ -109,7 +115,7 @@ RPScript is a scripting language for process automation.
 
 Unlike general purpose languages such as Python and Javascript, RPScript has only one specific goal, process automation.
 
-General purpose languages are powerful and flexible. However, this tends to compensate by having complicated syntax and language features. In the end, you have to deal with boilerplates and unnecessary steps that lead to complication despite only to perform a simple task.
+General purpose languages are powerful and flexible. However, it tends to compensate by having complicated syntax and language features. In the end, you have to deal with boilerplates and unnecessary steps, making it hard to perform even a simple task.
 
 RPScript goal is to make the syntax compact. Ideally, every action models as close to a single process as possible.
 
