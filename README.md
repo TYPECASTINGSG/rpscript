@@ -44,7 +44,7 @@ download('https://data.gov.sg/dataset/dba9594b-fb5c-41c5-bb7c-92860ee31aeb/downl
 ```
 with this:
 ```
-download "." "https://data.gov.sg/dataset/dba9594b-fb5c-41c5-bb7c-92860ee31aeb/download"
+download "https://data.gov.sg/dataset/dba9594b-fb5c-41c5-bb7c-92860ee31aeb/download"
 
 extract "download.zip" "./temp/"
 
