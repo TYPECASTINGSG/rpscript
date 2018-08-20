@@ -87,6 +87,17 @@ Getting started guide is available at [Getting Started](http://www.rpscript.com/
 
 Usage guide is available at [Usage](http://www.rpscript.com/tutorial-usage.html)
 
+## Usage <img src="https://s3.amazonaws.com/sample.rpscript.com/images/handy_robot50.png" width="25px">
+
+[Hello world](http://www.rpscript.com/tutorial-helloworld.html)
+
+[Ascii Art with Figlet](http://www.rpscript.com/tutorial-asciiart.html)
+
+[Compression](http://www.rpscript.com/tutorial-compression.html)
+
+[Table generation from CSV file](http://www.rpscript.com/tutorial-table.html)
+
+[Data Analysis from CSV file](http://www.rpscript.com/tutorial-datasetanalysis.html)
 
 ## Modules <img src="https://s3.amazonaws.com/sample.rpscript.com/images/bossy_robot50.png" width="18px">
 
