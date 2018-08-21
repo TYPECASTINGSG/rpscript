@@ -114,6 +114,8 @@ Name | Status | Description | Doc
 [Notifier](https://github.com/TYPECASTINGSG/rpscript-api-notifier) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-notifier) | Desktop Notification. | [Here](http://www.rpscript.com/Notifier.html)
 [Open](https://github.com/TYPECASTINGSG/rpscript-api-open) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-open) | Open a file or url in the user's preferred application. | [Here](http://www.rpscript.com/Open.html)
 [Zip](https://github.com/TYPECASTINGSG/rpscript-api-adm-zip) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-zip) | File compression and extraction. | [Here](http://www.rpscript.com/Zip.html)
+[Request](https://github.com/TYPECASTINGSG/rpscript-api-request) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-request.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-request) | Http call. | [Here](http://www.rpscript.com/Request.html)
+[Cheerio](https://github.com/TYPECASTINGSG/rpscript-api-cheerio) | [![npm version](https://badge.fury.io/js/%40typecasting%2Frpscript-api-cheerio.svg)](https://badge.fury.io/js/%40typecasting%2Frpscript-api-cheerio) | jQuery style traversal and manipulation. | [Here](http://www.rpscript.com/Cheerio.html)
 _ | _| More coming soon | _
 
 ## FAQ <img src="https://s3.amazonaws.com/sample.rpscript.com/images/smart_robot50.png" width="18px">
@@ -148,6 +150,8 @@ Most, if not, all the modules are wrappers that utilize what that the npm ecosys
 [Email](mailto:james.chong@typecasting.sg)
 
 ## Changelog <img src="https://s3.amazonaws.com/sample.rpscript.com/images/cheerful_robot50.png" width="23px">
+
+0.3.1 - Fixes: #1 #2
 
 0.3.0 - Initial alpha release
 
