@@ -20,7 +20,9 @@
     "csv",
     "date",
     "hogan",
-    "downloading"
+    "downloading",
+    "request",
+    "cheerio"
   ],
   "repository": {
     "type": "git",
@@ -41,7 +43,7 @@
     "cli-table": "^0.3.1",
     "commander": "^2.15.1",
     "dateformat": "^3.0.3",
-    "rpscript-parser": "^0.5.34",
+    "rpscript-parser": "^0.5.35",
     "winston": "^3.0.0"
   },
   "devDependencies": {
