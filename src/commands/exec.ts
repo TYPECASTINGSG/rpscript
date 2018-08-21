@@ -51,7 +51,16 @@ export class ExecCommand {
 
     function genString (p) {
       if(typeof p === 'function') return '[function]';
-      else if(typeof p === 'object') return JSON.stringify(p);
+      else if(typeof p === 'object'){
+        try{
+          return JSON.stringify(p);
+        }catch(err){
+          return "";
+        } 
+      }
+      else if(typeof p === 'symbol'){
+        return p.toString();
+      }
       else return p;
     }
 
